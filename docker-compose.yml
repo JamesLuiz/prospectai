@@ -1,4 +1,18 @@
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env.local
+    ports:
+      - "3000:3000"
+    volumes:
+      - prospectai-data:/app/data
+    depends_on:
+      - gmaps-scraper
+    restart: unless-stopped
+
   gmaps-scraper:
     image: gosom/google-maps-scraper
     ports:
@@ -9,4 +23,5 @@ services:
     restart: unless-stopped
 
 volumes:
+  prospectai-data:
   gmapsdata:

@@ -18,4 +18,4 @@ EXPOSE 3000
 
 VOLUME ["/app/data"]
 
-CMD ["sh", "-c", "mkdir -p /app/data && npm run db:migrate && npm start"]
+CMD ["npm", "start"]

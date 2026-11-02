@@ -11,6 +11,7 @@ services:
       - prospectai-data:/app/data
     depends_on:
       - gmaps-scraper
+    command: ["sh", "-c", "mkdir -p /app/data && npm run db:migrate && npm start"]
     restart: unless-stopped
 
   gmaps-scraper:

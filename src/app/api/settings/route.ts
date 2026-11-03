@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { validateBody, updateSettingsSchema } from "@/lib/validations";
+import {
+  validateBody,
+  updateSettingsSchema,
+  ALLOWED_SETTINGS_KEYS,
+  isAllowedSettingKey,
+} from "@/lib/validations";
 import * as settingsService from "@/services/settings.service";
 import { handleServiceError } from "@/services/api-handler";
 import { getApiKey } from "@/db";
+import { logger } from "@/lib/logger";
 
 // Secret settings: never sent to the client as plaintext. Instead we expose a
 // `<key>_configured` boolean so the UI can show "configured" without the value.
@@ -17,14 +23,21 @@ const SECRET_KEYS: Array<[string, string]> = [
 
 export async function GET() {
   try {
-    const data = settingsService.getAllSettings();
+    const all = settingsService.getAllSettings();
+    // Only expose user-editable keys. Internal rows (`*_migrated`, `_send_lock_*`,
+    // `imap_last_uid`, `quality_threshold`) stay server-side: the UI echoes back
+    // everything it receives, and unknown keys fail validation on save.
+    const data: Record<string, string> = {};
+    for (const key of ALLOWED_SETTINGS_KEYS) {
+      if (key === "imap_last_uid") continue;
+      data[key] = all[key] ?? "";
+    }
+
     for (const [key, env] of SECRET_KEYS) {
       const configured = env ? !!getApiKey(key, env) : !!(data[key] && data[key].trim());
       data[`${key}_configured`] = configured ? "true" : "false";
       data[key] = "";
     }
-    // Internal cursor — not a user-editable setting; never expose to the client.
-    delete data.imap_last_uid;
     return NextResponse.json(data);
   } catch (err) {
     return handleServiceError(err);
@@ -32,8 +45,36 @@ export async function GET() {
 }
 
 export async function PUT(req: NextRequest) {
-  const body = await req.json();
-  const v = validateBody(updateSettingsSchema, body);
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
+
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return NextResponse.json(
+      { error: "Expected an object of setting keys to values" },
+      { status: 400 }
+    );
+  }
+
+  // Tolerate clients that send internal/UI-only keys (older builds echoed the
+  // whole GET payload): drop them instead of rejecting the entire save.
+  const updates: Record<string, string> = {};
+  const ignored: string[] = [];
+  for (const [key, value] of Object.entries(body as Record<string, unknown>)) {
+    if (!isAllowedSettingKey(key)) {
+      ignored.push(key);
+      continue;
+    }
+    updates[key] = value as string;
+  }
+  if (ignored.length > 0) {
+    logger.warn(`[settings] ignorando claves no editables: ${ignored.join(", ")}`);
+  }
+
+  const v = validateBody(updateSettingsSchema, updates);
   if (!v.success) return v.response;
 
   try {

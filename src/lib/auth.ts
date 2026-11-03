@@ -88,16 +88,40 @@ export async function getSession(): Promise<{ username: string } | null> {
 
 // ─── Credentials validation ─────────────────────────────────────────
 
+/**
+ * Thrown when the deployment has no login configured. The route turns this into
+ * a 503 with an operator-facing message instead of an opaque 500, because the
+ * cause is always the same: AUTH_USERNAME / AUTH_PASSWORD_HASH are missing from
+ * the running container/env (they are read at request time, not build time).
+ */
+export class AuthNotConfiguredError extends Error {
+  code = "AUTH_NOT_CONFIGURED" as const;
+  constructor(missing: string[]) {
+    super(
+      `Server auth is not configured: set ${missing.join(" and ")} in the app environment, then restart.`
+    );
+    this.name = "AuthNotConfiguredError";
+  }
+}
+
+export function getMissingAuthEnv(): string[] {
+  const missing: string[] = [];
+  if (!process.env.AUTH_USERNAME?.trim()) missing.push("AUTH_USERNAME");
+  if (!process.env.AUTH_PASSWORD_HASH?.trim()) missing.push("AUTH_PASSWORD_HASH");
+  return missing;
+}
+
 export async function validateCredentials(
   username: string,
   password: string
 ): Promise<boolean> {
-  const envUser = process.env.AUTH_USERNAME;
-  const envHash = process.env.AUTH_PASSWORD_HASH;
-
-  if (!envUser || !envHash) {
-    throw new Error("AUTH_USERNAME and AUTH_PASSWORD_HASH must be set");
+  const missing = getMissingAuthEnv();
+  if (missing.length > 0) {
+    throw new AuthNotConfiguredError(missing);
   }
+
+  const envUser = process.env.AUTH_USERNAME!;
+  const envHash = process.env.AUTH_PASSWORD_HASH!;
 
   // Constant-time comparison for username via hashing
   if (username !== envUser) {

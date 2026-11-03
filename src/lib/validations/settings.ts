@@ -1,6 +1,10 @@
 import { z } from "zod";
 
-const ALLOWED_SETTINGS_KEYS = [
+// Keys that may be written through the settings API (and therefore returned by
+// GET /api/settings). Everything else in the `settings` table is internal
+// bookkeeping (migration flags, send locks, cursors) and must never round-trip
+// through the UI — echoing those back on save used to 400 the whole request.
+export const ALLOWED_SETTINGS_KEYS = [
   "agency_name", "agency_url", "agency_description", "agency_services",
   "target_country", "phone_country_code", "phone_digits",
   "locale", "currency",
@@ -37,6 +41,12 @@ const ALLOWED_SETTINGS_KEYS = [
   // Portfolio knowledge base + reply assistant
   "portfolio_enabled", "reply_autosuggest_enabled",
 ] as const;
+
+const ALLOWED_SETTINGS_KEY_SET: ReadonlySet<string> = new Set(ALLOWED_SETTINGS_KEYS);
+
+export function isAllowedSettingKey(key: string): boolean {
+  return ALLOWED_SETTINGS_KEY_SET.has(key);
+}
 
 export const updateSettingsSchema = z.record(z.string(), z.string()).refine(
   (data) => {

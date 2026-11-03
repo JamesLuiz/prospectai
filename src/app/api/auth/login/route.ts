@@ -5,6 +5,7 @@ import {
   setSessionCookie,
   checkRateLimit,
   resetRateLimit,
+  AuthNotConfiguredError,
 } from "@/lib/auth";
 import { logger } from "@/lib/logger";
 
@@ -51,6 +52,17 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (err) {
+    if (err instanceof AuthNotConfiguredError) {
+      logger.error(
+        `[auth] Login impossible — ${err.message} (values are read at runtime; `.concat(
+          "make sure they are present in the container/process env, not just in a local .env.local)"
+        )
+      );
+      return NextResponse.json(
+        { error: err.message, code: err.code },
+        { status: 503 }
+      );
+    }
     logger.error({ err }, "Login error");
     return NextResponse.json(
       { error: "Internal server error" },

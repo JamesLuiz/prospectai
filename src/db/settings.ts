@@ -156,8 +156,27 @@ export function setSetting(key: string, value: string): void {
  * otherwise fall back to the environment variable. Lets keys be managed from
  * the app UI without a restart while keeping `.env` working when unset.
  */
+/**
+ * Keys pasted from a dashboard/.env file sometimes keep wrapping quotes or a
+ * pasted "Bearer " prefix. Providers reject those with 401 even when the token
+ * itself is valid, so normalise before handing the key to an SDK.
+ */
+function normalizeApiKey(value: string): string {
+  let key = value.trim();
+  if (
+    key.length >= 2 &&
+    ((key.startsWith('"') && key.endsWith('"')) ||
+      (key.startsWith("'") && key.endsWith("'")))
+  ) {
+    key = key.slice(1, -1).trim();
+  }
+  return key.replace(/^Bearer\s+/i, "").trim();
+}
+
 export function getApiKey(settingKey: string, envName: string): string {
   const fromDb = getSetting(settingKey);
-  if (fromDb && fromDb.trim()) return fromDb.trim();
-  return process.env[envName] || "";
+  const raw = fromDb && fromDb.trim() ? fromDb : process.env[envName] || "";
+  // Only API keys get the quote/Bearer normalisation; SMTP/IMAP passwords keep
+  // their exact value apart from surrounding whitespace.
+  return settingKey.endsWith("_api_key") ? normalizeApiKey(raw) : raw.trim();
 }

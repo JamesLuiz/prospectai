@@ -268,7 +268,20 @@ export async function POST(req: Request) {
     // resolveChatModel) when the CLI isn't authenticated.
     onError: (error) => {
       const msg = error instanceof Error ? error.message : String(error);
-      if (/login|auth|unauthor|credential|token/i.test(msg)) {
+      const status = (error as { statusCode?: number }).statusCode;
+      const rejectedKey =
+        status === 401 || /unauthorized|invalid api key|api key.*invalid/i.test(msg);
+
+      if (provider === "mistral" && rejectedKey) {
+        return "Mistral rechazó la API key (401 Invalid API Key). Vuelve a guardar una key válida en Configuración > Conexiones. Ojo: una key guardada en la base de datos tiene prioridad sobre MISTRAL_API_KEY, así que si cambiaste solo la variable de entorno, sobrescríbela también en Settings.";
+      }
+      if (provider === "anthropic" && rejectedKey) {
+        return "Anthropic rechazó la API key (401). Vuelve a guardarla en Configuración > Conexiones.";
+      }
+      if (provider === "gemini" && (rejectedKey || status === 403)) {
+        return "Gemini rechazó la API key. Vuelve a guardarla en Configuración > Conexiones.";
+      }
+      if (resolved.kind === "cli" && /login|auth|unauthor|credential|token/i.test(msg)) {
         return "El agente Claude CLI no está autenticado. Ejecuta `claude auth login` en el servidor, o cambia el proveedor de IA en Configuración.";
       }
       return msg;

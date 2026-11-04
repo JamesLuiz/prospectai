@@ -51,6 +51,27 @@ export async function register() {
       );
     }
 
+    // Which copy of the AI key is actually in use? The Settings DB value wins
+    // over the environment, which is the usual reason "I changed the env var but
+    // it still says Unauthorized".
+    const aiKeys: Record<string, [string, string]> = {
+      mistral: ["mistral_api_key", "MISTRAL_API_KEY"],
+      anthropic: ["anthropic_api_key", "ANTHROPIC_API_KEY"],
+      gemini: ["gemini_api_key", "GEMINI_API_KEY"],
+    };
+    const aiProvider = getSetting("ai_provider") || "";
+    const keyPair = aiKeys[aiProvider];
+    if (keyPair) {
+      const [settingKey, envName] = keyPair;
+      const dbKey = getSetting(settingKey)?.trim();
+      const envKey = process.env[envName]?.trim();
+      const source = dbKey ? "Settings database" : envKey ? `${envName} env` : "none";
+      const override =
+        dbKey && envKey && dbKey !== envKey ? " (DB value overrides env)" : "";
+      const { logger } = await import("@/lib/logger");
+      logger.info(`[ai] provider=${aiProvider} key source=${source}${override}`);
+    }
+
     // Opt-in only: the engine auto-starts on boot ONLY when the user has turned it
     // on. Default off so a restart never silently resumes sending (email/WhatsApp/
     // Workana). The user enables this once they want always-on automation.

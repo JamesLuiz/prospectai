@@ -9,6 +9,20 @@ import {
 } from "@/lib/auth";
 import { logger } from "@/lib/logger";
 
+/**
+ * `instanceof` can fail when Next.js evaluates the auth module in more than one
+ * server chunk. The error carries a stable `code`, so use that as the source of
+ * truth and keep the status 503 instead of an opaque 500.
+ */
+function isAuthNotConfigured(err: unknown): err is AuthNotConfiguredError {
+  return (
+    err instanceof AuthNotConfiguredError ||
+    (typeof err === "object" &&
+      err !== null &&
+      (err as { code?: unknown }).code === "AUTH_NOT_CONFIGURED")
+  );
+}
+
 export async function POST(req: NextRequest) {
   // Get client IP for rate limiting
   const forwarded = req.headers.get("x-forwarded-for");
@@ -52,7 +66,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (err) {
-    if (err instanceof AuthNotConfiguredError) {
+    if (isAuthNotConfigured(err)) {
       logger.error(
         `[auth] Login impossible — ${err.message} (values are read at runtime; `.concat(
           "make sure they are present in the container/process env, not just in a local .env.local)"

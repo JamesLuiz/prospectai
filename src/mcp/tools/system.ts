@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { db, getSetting, setSetting, getApiKey } from "@/db";
+import { db, getSetting, setSetting, getApiKey, getGmapsScraperUrl } from "@/db";
 import { emails, whatsappMessages } from "@/db/schema";
 import { eq, and, sql } from "drizzle-orm";
 import { logActivity } from "@/lib/activity";
@@ -151,16 +151,12 @@ export function registerSystemTools(server: McpServer) {
       }
 
       // Scraper
-      const scraperUrl = getSetting("gmaps_scraper_url");
-      if (scraperUrl) {
-        try {
-          const res = await fetch(scraperUrl, { signal: AbortSignal.timeout(5000) });
-          results.scraper = res.ok ? "Connected" : `Error: HTTP ${res.status}`;
-        } catch (e) {
-          results.scraper = `Error: ${e instanceof Error ? e.message : "unreachable"}`;
-        }
-      } else {
-        results.scraper = "Not configured (gmaps_scraper_url missing)";
+      const scraperUrl = getGmapsScraperUrl();
+      try {
+        const res = await fetch(`${scraperUrl}/api/v1/jobs`, { signal: AbortSignal.timeout(5000) });
+        results.scraper = res.ok ? "Connected" : `Error: HTTP ${res.status}`;
+      } catch (e) {
+        results.scraper = `Error: ${e instanceof Error ? e.message : "unreachable"}`;
       }
 
       // WhatsApp

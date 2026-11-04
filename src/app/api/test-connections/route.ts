@@ -7,7 +7,7 @@ import { testConnection as testResend } from "@/lib/resend-client";
 import { testSmtp } from "@/lib/smtp-client";
 import { testImap } from "@/lib/cron/email-replies";
 import { getWhatsAppStatus } from "@/lib/whatsapp-client";
-import { getApiKey, getSetting } from "@/db";
+import { getApiKey, getSetting, getGmapsScraperUrl } from "@/db";
 
 export async function GET() {
   const results: Record<string, { ok: boolean; error?: string }> = {};
@@ -67,6 +67,24 @@ export async function GET() {
   if (getSetting("imap_enabled") === "true" || getSetting("imap_host")) {
     const imapResult = await testImap();
     results.imap = { ok: imapResult.success, error: imapResult.error };
+  }
+
+  // Test the Google Maps scraper. The self-hosted gosom image has no auth, so
+  // this call deliberately sends no API key — it verifies the URL is reachable
+  // from the app container (the most common deployment mistake).
+  const scraperUrl = getGmapsScraperUrl();
+  try {
+    const scraperRes = await fetch(`${scraperUrl}/api/v1/jobs`, {
+      signal: AbortSignal.timeout(5000),
+    });
+    results.scraper = scraperRes.ok
+      ? { ok: true }
+      : { ok: false, error: `HTTP ${scraperRes.status} at ${scraperUrl}` };
+  } catch (err) {
+    results.scraper = {
+      ok: false,
+      error: `${err instanceof Error ? err.message : "Unreachable"} (${scraperUrl})`,
+    };
   }
 
   // Test WhatsApp

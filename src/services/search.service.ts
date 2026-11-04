@@ -1,4 +1,4 @@
-import { db, getSetting } from "@/db";
+import { db, getGmapsScraperUrl } from "@/db";
 import { searchJobs } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { logActivity } from "@/lib/activity";
@@ -45,7 +45,7 @@ export function getSearchJob(id: number) {
 
 export async function startSearch(input: StartSearchInput) {
   const { keyword, campaignId, maxDepth = 12 } = input;
-  const scraperUrl = getSetting("gmaps_scraper_url") || "http://localhost:8081";
+  const scraperUrl = getGmapsScraperUrl();
 
   const formData = new URLSearchParams();
   formData.set("name", `prospectai-${Date.now()}`);

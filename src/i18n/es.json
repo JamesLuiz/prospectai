@@ -982,7 +982,7 @@
       "keepHint": "Déjalo vacío para conservar la clave actual",
       "geminiHint": "Generación de copy y análisis",
       "resendHint": "Envío de emails",
-      "gmapsHint": "Scraper de leads (Google Maps)",
+      "gmapsHint": "No se requiere para el scraper gosom autoalojado: déjalo vacío.",
       "anthropicHint": "Claude vía API (copy y análisis)",
       "mistralHint": "Mistral vía API (copy, análisis y chat)"
     },

@@ -42,7 +42,7 @@ const defaultSettings: Record<string, string> = {
   scrape_concurrency: "3",
   scrape_delay_ms: "2000",
   autopilot_global: "false",
-  gmaps_scraper_url: "http://localhost:8081",
+  gmaps_scraper_url: process.env.GMAPS_SCRAPER_URL || "http://localhost:8081",
   gmaps_scraper_api_key: "",
   // AI engine: which provider powers copy, analysis and the chatbot.
   // One of: claude_cli (local `claude -p`, default) | gemini | anthropic | mistral
@@ -118,6 +118,28 @@ export function initializeDefaultSettings(): void {
   for (const [key, value] of Object.entries(defaultSettings)) {
     sqlite.exec(`INSERT OR IGNORE INTO settings (key, value) VALUES ('${key}', '${value}')`);
   }
+}
+
+/**
+ * Resolve the Google Maps scraper URL.
+ *
+ * The value saved in Settings wins, except when it is still the built-in
+ * `http://localhost:8081` default: inside Docker that points at the app
+ * container itself, not the scraper. In that case GMAPS_SCRAPER_URL is used,
+ * so a redeploy that recreates the database (and re-seeds the default) still
+ * routes to the scraper service. A trailing slash is trimmed because callers
+ * append paths such as `/scrape`.
+ */
+export function getGmapsScraperUrl(): string {
+  const normalize = (value: string | null | undefined) =>
+    (value || "").trim().replace(/\/+$/, "");
+
+  const fromDb = normalize(getSetting("gmaps_scraper_url"));
+  const fromEnv = normalize(process.env.GMAPS_SCRAPER_URL);
+  const isLocalDefault =
+    !fromDb || fromDb === "http://localhost:8081" || fromDb === "http://127.0.0.1:8081";
+
+  return (isLocalDefault ? fromEnv || fromDb : fromDb) || "http://localhost:8081";
 }
 
 export function getSetting(key: string): string | null {

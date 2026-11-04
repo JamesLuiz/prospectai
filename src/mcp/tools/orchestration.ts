@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { db, getSetting, getApiKey } from "@/db";
+import { db, getSetting, getApiKey, getGmapsScraperUrl } from "@/db";
 import { campaigns, leads, emails, whatsappMessages, searchJobs, jobQueue } from "@/db/schema";
 import { eq, and, sql, desc, isNotNull } from "drizzle-orm";
 import { logActivity } from "@/lib/activity";
@@ -105,10 +105,7 @@ export function registerOrchestrationTools(server: McpServer) {
       const campaign = db.select().from(campaigns).where(eq(campaigns.id, campaignId)).get();
       if (!campaign) return { content: [{ type: "text", text: `Campaign ID ${campaignId} not found.` }], isError: true };
 
-      const scraperUrl = getSetting("gmaps_scraper_url");
-      if (!scraperUrl) {
-        return { content: [{ type: "text", text: "gmaps_scraper_url not configured. Set it via update_settings." }], isError: true };
-      }
+      const scraperUrl = getGmapsScraperUrl();
 
       // Poll existing search
       if (searchJobId) {

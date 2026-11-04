@@ -4,7 +4,14 @@ services:
       context: .
       dockerfile: Dockerfile
     env_file:
-      - .env.local
+      # Optional so deployments that inject env vars (Coolify, Docker secrets)
+      # still start when no .env.local was copied from .env.example.
+      - path: .env.local
+        required: false
+    environment:
+      # Correct container-to-container URL; `localhost` inside this container
+      # is the app itself, not the scraper. Override with GMAPS_SCRAPER_URL.
+      GMAPS_SCRAPER_URL: ${GMAPS_SCRAPER_URL:-http://gmaps-scraper:8080}
     ports:
       - "3000:3000"
     volumes:

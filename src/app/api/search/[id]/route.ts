@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db, getSetting } from "@/db";
+import { db, getGmapsScraperUrl } from "@/db";
 import { searchJobs } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import Papa from "papaparse";
@@ -38,7 +38,7 @@ export async function GET(
 
     // If job is still pending/running, poll the scraper for updates
     if ((job.status === "pending" || job.status === "running") && job.scraperJobId) {
-      const scraperUrl = getSetting("gmaps_scraper_url") || "http://localhost:8081";
+      const scraperUrl = getGmapsScraperUrl();
 
       try {
         // Check job status via JSON API

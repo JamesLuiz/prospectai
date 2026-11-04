@@ -1,6 +1,12 @@
 import { Client, LocalAuth } from "whatsapp-web.js";
 import QRCode from "qrcode";
+import path from "path";
 import { getSetting } from "@/db";
+
+// Keep the linked session inside <cwd>/data so a single persistent volume
+// (the one holding the SQLite DB) also survives container redeploys.
+const WA_AUTH_PATH =
+  process.env.WHATSAPP_AUTH_PATH || path.join(process.cwd(), "data", ".wwebjs_auth");
 
 type WAStatus = "disconnected" | "qr_pending" | "authenticating" | "ready" | "error";
 
@@ -40,7 +46,7 @@ const wa: WAGlobal =
 
 function createClient(): Client {
   return new Client({
-    authStrategy: new LocalAuth({ dataPath: ".wwebjs_auth" }),
+    authStrategy: new LocalAuth({ dataPath: WA_AUTH_PATH }),
     puppeteer: {
       headless: true,
       args: [

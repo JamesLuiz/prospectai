@@ -7,3 +7,8 @@ npm-debug.log
 .next
 .DS_Store
 coverage
+# Never bake the local SQLite DB, Workana profile or WhatsApp session into an
+# image — they live on the persistent volume at runtime.
+data
+.wwebjs_auth
+.wwebjs_cache

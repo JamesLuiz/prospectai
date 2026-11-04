@@ -1,4 +1,4 @@
-import { db, getSetting } from "@/db";
+import { db, getGmapsScraperUrl } from "@/db";
 import { searchJobs } from "@/db/schema";
 import { logActivity } from "@/lib/activity";
 
@@ -16,10 +16,7 @@ export async function startGoogleMapsSearch(
   keyword: string,
   campaignId: number
 ): Promise<SearchResult> {
-  const scraperUrl = getSetting("gmaps_scraper_url");
-  if (!scraperUrl) {
-    return { success: false, error: "gmaps_scraper_url not configured. Set it via update_settings." };
-  }
+  const scraperUrl = getGmapsScraperUrl();
 
   try {
     const formData = new URLSearchParams();

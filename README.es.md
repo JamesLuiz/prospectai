@@ -150,14 +150,29 @@ Ve a **Settings** para completar la configuracion:
 Para habilitar la busqueda de negocios via Google Maps:
 
 ```bash
-# Iniciar el contenedor del scraper
-docker compose up -d
+# Iniciar solo el contenedor del scraper (app con npm run dev / npm start)
+docker compose up -d gmaps-scraper
 
-# Verificar que esta corriendo (debe responder en el puerto 8081)
+# Verificar que responde desde el host (publicado en el puerto 8081)
 curl http://localhost:8081
 ```
 
-Luego en **Settings > Google Maps Scraper URL**, configura `http://localhost:8081`.
+Luego configura **Settings > Google Maps Scraper URL** segun donde corra la app:
+
+| La app corre... | Usa |
+|-----------------|-----|
+| En el host (`npm run dev` / `npm start`) | `http://localhost:8081` |
+| En el mismo stack de Docker Compose | `http://gmaps-scraper:8080` |
+| En Coolify / otro orquestador | el nombre del servicio del scraper en la red compartida, p. ej. `http://gmaps-scraper:8080` (o define `GMAPS_SCRAPER_URL`) |
+
+> **No se necesita API key** para la imagen autoalojada `gosom/google-maps-scraper`. El campo
+> "API key" de Settings solo sirve si pones un proxy con autenticacion delante; si no, dejalo vacio.
+
+> **Persistencia de datos:** la base SQLite, los settings, el perfil de Workana y la sesion de
+> WhatsApp viven bajo `/app/data`. Monta ahi un volumen persistente. El `docker-compose.yml` ya
+> lo hace (`prospectai-data`); en Coolify agrega un **Persistent Storage** apuntando a `/app/data`
+> si usas el build pack de Dockerfile. Sin eso, cada redeploy arranca con la base vacia y la URL
+> del scraper vuelve a `http://localhost:8081`, que no es alcanzable desde el contenedor de la app.
 
 ## Integracion de WhatsApp
 

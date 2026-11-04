@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Card, Button, Input, Select, Toggle, Spinner, Badge, ProgressBar, Segment } from "@/components/ui";
 import { useToast } from "@/components/Toast";
 import { Zap, TestTube, CheckCircle, XCircle, RefreshCw, MessageCircle, Wifi, WifiOff, Globe, Shield, Clock, Link2, Webhook, Settings2, Play, Square, Wand2, KeyRound, Cpu, Mail, Palette } from "lucide-react";
-import { AnthropicIcon, GeminiIcon, WhatsAppIcon, GoogleIcon, ResendIcon } from "@/components/icons/Brands";
+import { AnthropicIcon, GeminiIcon, WhatsAppIcon, ResendIcon } from "@/components/icons/Brands";
 import { useT } from "@/i18n/LocaleProvider";
 import { useTheme } from "@/components/ThemeProvider";
 import { getLang } from "@/i18n/index";
@@ -399,7 +399,6 @@ export default function SettingsPage() {
               { key: "anthropic_api_key", label: t("settings.apiKeys.anthropic"), hint: t("settings.apiKeys.anthropicHint"), Icon: AnthropicIcon },
               { key: "mistral_api_key", label: t("settings.apiKeys.mistral"), hint: t("settings.apiKeys.mistralHint"), Icon: Cpu },
               { key: "resend_api_key", label: t("settings.apiKeys.resend"), hint: t("settings.apiKeys.resendHint"), Icon: ResendIcon },
-              { key: "gmaps_scraper_api_key", label: t("settings.gmapsScraper"), hint: t("settings.apiKeys.gmapsHint"), Icon: GoogleIcon },
             ] as const).map((f) => (
               <div key={f.key} className="rounded-xl border border-border bg-[var(--glass-bg)] backdrop-blur-md p-4">
                 <div className="flex items-center gap-3 mb-3">
@@ -934,6 +933,7 @@ export default function SettingsPage() {
                 onChange={(e) => setSettings({ ...settings, gmaps_scraper_api_key: e.target.value })}
                 placeholder={t("settings.apiKeyPlaceholder")}
               />
+              <p className="text-[11px] text-text-muted mt-1">{t("settings.apiKeys.gmapsHint")}</p>
             </div>
           </div>
         </Card>

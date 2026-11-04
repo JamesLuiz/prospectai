@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Anthropic from "@anthropic-ai/sdk";
+import { createMistral } from "@ai-sdk/mistral";
+import { generateText } from "ai";
 import { testConnection as testResend } from "@/lib/resend-client";
 import { testSmtp } from "@/lib/smtp-client";
 import { testImap } from "@/lib/cron/email-replies";
@@ -33,6 +35,21 @@ export async function GET() {
       results.anthropic = { ok: true };
     } catch (err) {
       results.anthropic = { ok: false, error: err instanceof Error ? err.message : "Connection failed" };
+    }
+  }
+
+  // Test Mistral (only when a key is configured)
+  const mistralKey = getApiKey("mistral_api_key", "MISTRAL_API_KEY");
+  if (mistralKey) {
+    try {
+      await generateText({
+        model: createMistral({ apiKey: mistralKey })("mistral-small-latest"),
+        prompt: "Reply with OK",
+        maxOutputTokens: 8,
+      });
+      results.mistral = { ok: true };
+    } catch (err) {
+      results.mistral = { ok: false, error: err instanceof Error ? err.message : "Connection failed" };
     }
   }
 

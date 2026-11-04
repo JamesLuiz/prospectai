@@ -114,6 +114,27 @@ export function registerSystemTools(server: McpServer) {
         results.gemini = "Not configured (GEMINI_API_KEY missing)";
       }
 
+      // Mistral (only when a key is configured)
+      const mistralKey = getApiKey("mistral_api_key", "MISTRAL_API_KEY");
+      if (mistralKey) {
+        try {
+          const [{ createMistral }, { generateText }] = await Promise.all([
+            import("@ai-sdk/mistral"),
+            import("ai"),
+          ]);
+          await generateText({
+            model: createMistral({ apiKey: mistralKey })("mistral-small-latest"),
+            prompt: "Reply with OK",
+            maxOutputTokens: 8,
+          });
+          results.mistral = "Connected";
+        } catch (e) {
+          results.mistral = `Error: ${e instanceof Error ? e.message : "unknown"}`;
+        }
+      } else {
+        results.mistral = "Not configured (MISTRAL_API_KEY missing)";
+      }
+
       // Resend
       const resendKey = getApiKey("resend_api_key", "RESEND_API_KEY");
       if (resendKey) {

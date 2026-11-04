@@ -17,7 +17,7 @@ export const ALLOWED_SETTINGS_KEYS = [
   "scrape_concurrency", "scrape_delay_ms",
   "autopilot_global",
   "gmaps_scraper_url", "gmaps_scraper_api_key",
-  "gemini_api_key", "anthropic_api_key", "resend_api_key",
+  "gemini_api_key", "anthropic_api_key", "mistral_api_key", "resend_api_key",
   "wa_daily_limit",
   "wa_warmup_enabled", "wa_warmup_day", "wa_warmup_start_limit", "wa_warmup_increment", "wa_warmup_max_limit",
   "ai_provider", "chatbot_provider",

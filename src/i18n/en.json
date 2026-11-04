@@ -975,6 +975,7 @@
       "desc": "Stored in the database and take priority over the .env file. Leave blank to keep the current value.",
       "gemini": "Gemini API key",
       "anthropic": "Anthropic API key",
+      "mistral": "Mistral API key",
       "resend": "Resend API key",
       "configured": "Configured",
       "notSet": "Not set",
@@ -982,7 +983,8 @@
       "geminiHint": "Copy generation & analysis",
       "resendHint": "Email delivery",
       "gmapsHint": "Lead scraper (Google Maps)",
-      "anthropicHint": "Claude via API (copy & analysis)"
+      "anthropicHint": "Claude via API (copy & analysis)",
+      "mistralHint": "Mistral via API (copy, analysis & chat)"
     },
     "aiEngine": {
       "section": "AI engine",
@@ -991,9 +993,11 @@
       "claudeCli": "Claude CLI (claude -p)",
       "gemini": "Gemini API",
       "anthropic": "Anthropic API",
+      "mistral": "Mistral API",
       "claudeCliHelp": "Uses the logged-in claude CLI (Max plan), no API cost. Requires running \"claude auth login\". The chat agent also runs on your CLI session — no API key needed.",
       "geminiHelp": "Uses the Gemini API key configured below.",
-      "anthropicHelp": "Uses the Anthropic API key configured below. Default model: claude-sonnet-4-6."
+      "anthropicHelp": "Uses the Anthropic API key configured below. Default model: claude-sonnet-4-6.",
+      "mistralHelp": "Uses the Mistral API key configured below. Default model: mistral-large-latest (override with the MISTRAL_MODEL env var)."
     },
     "emailProvider": {
       "section": "Email sending",

@@ -45,11 +45,12 @@ const defaultSettings: Record<string, string> = {
   gmaps_scraper_url: "http://localhost:8081",
   gmaps_scraper_api_key: "",
   // AI engine: which provider powers copy, analysis and the chatbot.
-  // One of: claude_cli (local `claude -p`, default) | gemini | anthropic
+  // One of: claude_cli (local `claude -p`, default) | gemini | anthropic | mistral
   ai_provider: "claude_cli",
   // Provider API keys — a non-empty DB value overrides the .env var
   gemini_api_key: "",
   anthropic_api_key: "",
+  mistral_api_key: "",
   resend_api_key: "",
   // Reply-To
   reply_to_email: "",

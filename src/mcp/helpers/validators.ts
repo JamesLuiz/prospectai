@@ -13,6 +13,32 @@ export function checkGeminiConfig(): ConfigCheck {
   return { ok: missing.length === 0, missing, warnings };
 }
 
+export function checkAnthropicConfig(): ConfigCheck {
+  const missing: string[] = [];
+  const warnings: string[] = [];
+  if (!getApiKey("anthropic_api_key", "ANTHROPIC_API_KEY")) missing.push("ANTHROPIC_API_KEY env var");
+  return { ok: missing.length === 0, missing, warnings };
+}
+
+export function checkMistralConfig(): ConfigCheck {
+  const missing: string[] = [];
+  const warnings: string[] = [];
+  if (!getApiKey("mistral_api_key", "MISTRAL_API_KEY")) missing.push("MISTRAL_API_KEY env var");
+  return { ok: missing.length === 0, missing, warnings };
+}
+
+/**
+ * AI readiness for the provider actually selected in Settings. `claude_cli` needs
+ * no API key (it uses the logged-in CLI), so it never blocks a campaign.
+ */
+export function checkAiConfig(): ConfigCheck {
+  const provider = getSetting("ai_provider") || "claude_cli";
+  if (provider === "anthropic") return checkAnthropicConfig();
+  if (provider === "mistral") return checkMistralConfig();
+  if (provider === "gemini") return checkGeminiConfig();
+  return { ok: true, missing: [], warnings: [] };
+}
+
 export function checkEmailConfig(): ConfigCheck {
   const missing: string[] = [];
   const warnings: string[] = [];
@@ -44,7 +70,7 @@ export function checkScraperConfig(): ConfigCheck {
 
 export function checkFullConfig(): Record<string, ConfigCheck> {
   return {
-    gemini: checkGeminiConfig(),
+    ai: checkAiConfig(),
     email: checkEmailConfig(),
     whatsapp: checkWhatsAppConfig(),
     scraper: checkScraperConfig(),

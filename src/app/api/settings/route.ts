@@ -15,6 +15,7 @@ import { logger } from "@/lib/logger";
 const SECRET_KEYS: Array<[string, string]> = [
   ["gemini_api_key", "GEMINI_API_KEY"],
   ["anthropic_api_key", "ANTHROPIC_API_KEY"],
+  ["mistral_api_key", "MISTRAL_API_KEY"],
   ["resend_api_key", "RESEND_API_KEY"],
   ["gmaps_scraper_api_key", ""],
   ["imap_password", "IMAP_PASSWORD"],

@@ -373,6 +373,7 @@ export default function SettingsPage() {
                 <option value="claude_cli">{t("settings.aiEngine.claudeCli")}</option>
                 <option value="gemini">{t("settings.aiEngine.gemini")}</option>
                 <option value="anthropic">{t("settings.aiEngine.anthropic")}</option>
+                <option value="mistral">{t("settings.aiEngine.mistral")}</option>
               </Select>
             </div>
             <p className="text-[11px] text-text-muted leading-relaxed">
@@ -380,6 +381,8 @@ export default function SettingsPage() {
                 ? t("settings.aiEngine.geminiHelp")
                 : settings.ai_provider === "anthropic"
                 ? t("settings.aiEngine.anthropicHelp")
+                : settings.ai_provider === "mistral"
+                ? t("settings.aiEngine.mistralHelp")
                 : t("settings.aiEngine.claudeCliHelp")}
             </p>
           </div>
@@ -394,6 +397,7 @@ export default function SettingsPage() {
             {([
               { key: "gemini_api_key", label: t("settings.apiKeys.gemini"), hint: t("settings.apiKeys.geminiHint"), Icon: GeminiIcon },
               { key: "anthropic_api_key", label: t("settings.apiKeys.anthropic"), hint: t("settings.apiKeys.anthropicHint"), Icon: AnthropicIcon },
+              { key: "mistral_api_key", label: t("settings.apiKeys.mistral"), hint: t("settings.apiKeys.mistralHint"), Icon: Cpu },
               { key: "resend_api_key", label: t("settings.apiKeys.resend"), hint: t("settings.apiKeys.resendHint"), Icon: ResendIcon },
               { key: "gmaps_scraper_api_key", label: t("settings.gmapsScraper"), hint: t("settings.apiKeys.gmapsHint"), Icon: GoogleIcon },
             ] as const).map((f) => (

@@ -91,6 +91,11 @@ Edit `.env.local` with your values:
 GEMINI_API_KEY=your_gemini_api_key
 RESEND_API_KEY=your_resend_api_key
 
+# Optional AI providers (pick one via Settings → AI engine)
+ANTHROPIC_API_KEY=           # ai_provider=anthropic
+MISTRAL_API_KEY=             # ai_provider=mistral
+# MISTRAL_MODEL=mistral-large-latest
+
 # Authentication — pick a username and password
 AUTH_USERNAME=admin
 AUTH_PASSWORD_HASH=          # Generate below

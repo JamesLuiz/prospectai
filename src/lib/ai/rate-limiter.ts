@@ -35,3 +35,7 @@ export class TokenBucketRateLimiter {
 
 // 10 requests burst, 2/sec sustained — generous for Gemini's free tier
 export const geminiRateLimiter = new TokenBucketRateLimiter(10, 2);
+
+// Mistral's free tier is stricter (≈1 req/sec). 5 burst, 1/sec sustained is a
+// safe default that still keeps copy generation moving.
+export const mistralRateLimiter = new TokenBucketRateLimiter(5, 1);

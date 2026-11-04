@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { validateBody, executePhaseSchema } from "@/lib/validations";
 import { handleServiceError } from "@/services/api-handler";
 import {
-  checkGeminiConfig,
+  checkAiConfig,
   checkEmailConfig,
   checkScraperConfig,
   type ConfigCheck,
@@ -65,10 +65,10 @@ function collectWarnings(checks: ConfigCheck[]): string[] {
 
 const PHASE_VALIDATORS: Record<string, () => ConfigCheck[]> = {
   search: () => [checkScraperConfig()],
-  analysis: () => [checkGeminiConfig(), checkScraperConfig()],
-  generation: () => [checkGeminiConfig()],
+  analysis: () => [checkAiConfig(), checkScraperConfig()],
+  generation: () => [checkAiConfig()],
   sending: () => [checkEmailConfig()],
-  engagement: () => [checkGeminiConfig(), checkEmailConfig()],
+  engagement: () => [checkAiConfig(), checkEmailConfig()],
 };
 
 // Fire-and-forget helper: runs async work in background, logs errors

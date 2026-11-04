@@ -975,6 +975,7 @@
       "desc": "Se guardan en la base de datos y tienen prioridad sobre el archivo .env. Déjalas vacías para conservar la actual.",
       "gemini": "Gemini API Key",
       "anthropic": "Anthropic API Key",
+      "mistral": "Mistral API Key",
       "resend": "Resend API Key",
       "configured": "Configurada",
       "notSet": "Sin configurar",
@@ -982,7 +983,8 @@
       "geminiHint": "Generación de copy y análisis",
       "resendHint": "Envío de emails",
       "gmapsHint": "Scraper de leads (Google Maps)",
-      "anthropicHint": "Claude vía API (copy y análisis)"
+      "anthropicHint": "Claude vía API (copy y análisis)",
+      "mistralHint": "Mistral vía API (copy, análisis y chat)"
     },
     "aiEngine": {
       "section": "Motor de IA",
@@ -991,9 +993,11 @@
       "claudeCli": "Claude CLI (claude -p)",
       "gemini": "Gemini API",
       "anthropic": "Anthropic API",
+      "mistral": "Mistral API",
       "claudeCliHelp": "Usa el CLI claude ya iniciado (plan Max), sin coste por API. Requiere ejecutar \"claude auth login\". El chat/agente también corre sobre tu sesión del CLI; no necesita clave de API.",
       "geminiHelp": "Usa la Gemini API Key configurada abajo.",
-      "anthropicHelp": "Usa la Anthropic API Key configurada abajo. Modelo por defecto: claude-sonnet-4-6."
+      "anthropicHelp": "Usa la Anthropic API Key configurada abajo. Modelo por defecto: claude-sonnet-4-6.",
+      "mistralHelp": "Usa la Mistral API Key configurada abajo. Modelo por defecto: mistral-large-latest (puedes cambiarlo con la variable MISTRAL_MODEL)."
     },
     "emailProvider": {
       "section": "Envío de email",

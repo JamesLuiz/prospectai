@@ -7,6 +7,7 @@ import {
 } from "ai";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { createAnthropic } from "@ai-sdk/anthropic";
+import { createMistral } from "@ai-sdk/mistral";
 import { claudeCode, createAiSdkMcpServer } from "ai-sdk-provider-claude-code";
 import {
   chatbotTools,
@@ -82,6 +83,7 @@ const CLI_DEV_TOOLS = [
 ];
 
 const ANTHROPIC_CHAT_MODEL = process.env.ANTHROPIC_MODEL || "claude-sonnet-4-6";
+const MISTRAL_CHAT_MODEL = process.env.MISTRAL_MODEL || "mistral-large-latest";
 const CLI_CHAT_MODEL = process.env.CLAUDE_CLI_CHAT_MODEL || "sonnet";
 
 // Built-in Claude Code tools the outreach agent must never touch. With
@@ -109,8 +111,8 @@ type ChatModel =
 /**
  * Resolve the chat model from the global `ai_provider` setting.
  *
- * All three providers drive the same Vercel AI SDK `useChat` UI:
- *   - `anthropic` / `gemini` → native AI SDK providers, tools run in-process.
+ * All four providers drive the same Vercel AI SDK `useChat` UI:
+ *   - `anthropic` / `gemini` / `mistral` → native AI SDK providers, tools run in-process.
  *   - `claude_cli`           → the `ai-sdk-provider-claude-code` bridge runs the
  *                              agent through the logged-in Claude CLI subscription
  *                              (no API key); our tools are exposed as an in-process
@@ -158,6 +160,19 @@ function resolveChatModel(provider: AiProvider, devMode: boolean): ChatModel {
     return {
       kind: "aisdk",
       model: createAnthropic({ apiKey: anthropicKey })(ANTHROPIC_CHAT_MODEL),
+    };
+  }
+
+  if (provider === "mistral") {
+    const mistralKey = getApiKey("mistral_api_key", "MISTRAL_API_KEY");
+    if (!mistralKey) {
+      throw new Error(
+        "El chatbot requiere una Mistral API Key. Configúrala en Configuración > Conexiones."
+      );
+    }
+    return {
+      kind: "aisdk",
+      model: createMistral({ apiKey: mistralKey })(MISTRAL_CHAT_MODEL),
     };
   }
 

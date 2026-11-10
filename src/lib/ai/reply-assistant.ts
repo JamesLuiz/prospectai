@@ -11,10 +11,10 @@ import { getLeadConversation, formatConversation } from "@/lib/conversation";
 const REPLY_MODEL = process.env.REPLY_DRAFT_MODEL || "claude-opus-4-8";
 
 const REPLY_SYSTEM =
-  "Eres la persona real que hace el trabajo en una agencia y le responde a un prospecto que contestó tu mensaje. " +
-  "Escribes natural y directo, como una persona concreta, nunca como una IA ni con plantillas. No inventas casos, " +
-  "datos, precios ni resultados. PROHIBIDO usar em-dash o guion largo (el carácter —): usa coma, punto, dos puntos o " +
-  "paréntesis. Nunca incluyes contacto fuera del canal. Respondes solo con el objeto solicitado.";
+  "You are the real person who does the work at an agency and answers a prospect who replied to your message. " +
+  "You write naturally and directly, like a real person, never like an AI nor with templates. You don't invent cases, " +
+  "data, prices or results. PROHIBITED to use em-dash or long dash (the character —): use comma, period, colon or " +
+  "parentheses. You never share contact info outside the channel. Answer only with the requested object.";
 
 const REPLY_SCHEMA = {
   type: "object",
@@ -33,7 +33,7 @@ export interface DraftReplyInput {
   leadCategory?: string | null;
   leadCountry?: string | null;
   fromName?: string | null;
-  /** Optional user steer for a regenerate (e.g. "más corto", "ofrece una llamada"). */
+  /** Optional user steer for a regenerate (e.g. "shorter", "offer a call"). */
   instructions?: string;
 }
 
@@ -53,37 +53,37 @@ export async function draftConversationReply(input: DraftReplyInput): Promise<st
   const fromName = input.fromName || ctx.ownerName || ctx.name;
 
   const turns = getLeadConversation(input.leadId);
-  const thread = formatConversation(turns, fromName || "Nosotros", input.leadName || "Cliente");
+  const thread = formatConversation(turns, fromName || "Us", input.leadName || "Client");
   const relevanceHint = [input.leadCategory, text].filter(Boolean).join(" ");
 
   const channelRules =
     input.channel === "whatsapp"
       ? [
-          "Es una respuesta de WhatsApp: máximo 500 caracteres, conversacional, en una sola burbuja.",
-          "CERO links, URLs o dominios. Cero o máximo 1 emoji.",
+          "This is a WhatsApp reply: maximum 500 characters, conversational, single bubble.",
+          "ZERO links, URLs, domains. ZERO or max 1 emoji.",
         ]
       : [
-          "Es una respuesta de email: saludo breve + cuerpo claro. No escribas asunto (se reutiliza el del hilo).",
-          "Concisa (80-160 palabras). Sin firma ni pie legal (se inyectan aparte).",
+          "This is an email reply: brief greeting + clear body. Do not write a subject (it is reused from the thread).",
+          "Concise (80-160 words). No signature or legal footer (they are injected separately).",
         ];
 
   const prompt = [
-    "PERFIL (responde como este perfil, en primera persona, como una persona real):",
+    "PROFILE (answer as this profile, in first person, like a real person):",
     formatAgencyContextBlock(ctx, { relevanceHint, maxProjects: input.channel === "whatsapp" ? 2 : 4 }),
     "",
-    `Quien escribe se llama ${fromName}${ctx.name ? `, de ${ctx.name}` : ""}.`,
-    thread ? `CONVERSACIÓN HASTA AHORA (de más antigua a más reciente):\n${thread}` : "",
+    `The person writing is called ${fromName}${ctx.name ? `, from ${ctx.name}` : ""}.`,
+    thread ? `CONVERSATION SO FAR (oldest to most recent):\n${thread}` : "",
     "",
-    fenced("ÚLTIMO MENSAJE DEL PROSPECTO (al que respondes)", text.slice(0, 1500)),
+    fenced("LAST MESSAGE FROM THE PROSPECT (the one you're answering)", text.slice(0, 1500)),
     "",
     ANTI_AI_RULES,
     "",
-    `Idioma de la respuesta: ${localeLabel}.`,
+    `Response language: ${localeLabel}.`,
     ...channelRules,
-    "Responde de forma útil y humana: contesta lo que pregunta o plantea y avanza la conversación con un siguiente paso concreto.",
-    "Si en el contexto hay un proyecto del portafolio que encaje, úsalo como prueba breve y concreta, sin inventar ni exagerar.",
-    "Nunca inventes precios o plazos que no sepas; si no los sabes, propón hablarlos. Nunca incluyas contacto fuera del canal.",
-    ...(input.instructions ? ["", `AJUSTE PEDIDO POR EL USUARIO (respétalo sin perder naturalidad): ${input.instructions.trim()}`] : []),
+    "Answer in a useful and human way: address what they ask or raise and move the conversation forward with a concrete next step.",
+    "If there is a portfolio project in the context that fits, use it as a short and concrete proof, without inventing or exaggerating it.",
+    "Never invent prices or timelines you don't know; if you don't know them, propose to discuss them. Never include contact info outside the channel.",
+    ...(input.instructions ? ["", `USER ADJUSTMENT REQUEST (respect it while keeping it natural): ${input.instructions.trim()}`] : []),
     writingRules,
   ]
     .filter(Boolean)

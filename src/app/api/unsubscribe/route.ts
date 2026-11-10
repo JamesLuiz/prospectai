@@ -67,7 +67,7 @@ export async function GET(req: NextRequest) {
 
 function renderPage(title: string, message: string): string {
   return `<!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${title}</title>
 <style>body{font-family:system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#fafafa;color:#333}

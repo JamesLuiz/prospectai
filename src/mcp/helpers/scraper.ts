@@ -1,4 +1,4 @@
-import { db, getGmapsScraperUrl } from "@/db";
+import { db, getGmapsScraperUrl, getSetting } from "@/db";
 import { searchJobs } from "@/db/schema";
 import { logActivity } from "@/lib/activity";
 
@@ -22,7 +22,7 @@ export async function startGoogleMapsSearch(
     const formData = new URLSearchParams();
     formData.set("name", `prospectai-${Date.now()}`);
     formData.set("keywords", keyword.trim());
-    formData.set("lang", "es");
+    formData.set("lang", (getSetting("locale") || "en-US").split(/[-_]/)[0].toLowerCase());
     formData.set("depth", "12");
     formData.set("email", "on");
     formData.set("maxtime", "15m");

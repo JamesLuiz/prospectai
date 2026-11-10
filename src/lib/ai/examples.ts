@@ -1,27 +1,27 @@
 /**
- * Few-shot bank de ejemplos validados con el usuario.
+ * Few-shot bank of validated examples.
  *
- * Estos ejemplos son la palanca #1 para que el LLM genere copy con tono humano
- * en lugar de "AI smell". Mejor mostrar 3 ejemplos reales del estilo deseado
- * que escribir 30 líneas de instrucciones describiéndolo.
+ * These examples are the #1 lever to get the LLM to generate copy with a real
+ * human tone instead of "AI smell". Better to show 3 real examples of the
+ * desired style than to write 30 lines of instructions describing it.
  *
- * Estilos validados:
- * - email: A (ultra directo) / B (cercano profesional) / D (casual)
- * - whatsapp: A (ultra-corto) / B (permission-based) / C (observación + propuesta)
+ * Validated styles:
+ * - email: A (ultra direct) / B (close/professional) / D (casual)
+ * - whatsapp: A (ultra-short) / B (permission-based) / C (observation + proposal)
  *
- * Para añadir más ejemplos: mantén el mismo tono. Sin em-dashes. Sin
- * "espero que estés bien". Sin vocabulario AI. Mezcla longitudes de frase.
+ * To add more examples: keep the same tone. No em-dashes. No "hope you're well".
+ * No AI vocabulary. Mix sentence lengths.
  */
 
 export type EmailExample = {
-  style: "directo" | "cercano" | "casual";
+  style: "direct" | "close" | "casual";
   context: string;
   subject: string;
   body: string;
 };
 
 export type WhatsAppExample = {
-  style: "directo" | "permission" | "observacion" | "cercano";
+  style: "direct" | "permission" | "observation" | "close";
   context: string;
   message: string;
 };
@@ -34,94 +34,94 @@ export type CopyPurpose = "initial" | "follow_up" | "breakup";
 
 export const EMAIL_EXAMPLES_INITIAL: EmailExample[] = [
   {
-    style: "directo",
-    context: "Restaurante España, web no responsive",
-    subject: "web de El Rincón de Lola",
-    body: `Hola [nombre],
+    style: "direct",
+    context: "Restaurant in Barcelona, web not responsive",
+    subject: "the web of El Rincón de Lola",
+    body: `Hi [name],
 
-Vi El Rincón de Lola en Sevilla. La carta tiene buenísima pinta, pero la web os está jugando en contra: no carga bien desde el móvil y eso es por donde busca el 70% de la gente que reserva sitio para cenar.
+I found El Rincón de Lola in Barcelona. The menu looks great, but the website works against you: it loads poorly on mobile and that's where most people who book a table for dinner come from.
 
-Ayudamos a restaurantes a tener una web que de verdad les traiga reservas, no solo que esté ahí.
+We help restaurants get a website that actually brings reservations, not just one that exists.
 
-¿Te paso un caso de uno parecido al vuestro y vemos si tiene sentido?
+Want me to send a case similar to yours and see if it makes sense?
 
-Un saludo,
+Best,
 Pablo`,
   },
   {
-    style: "cercano",
-    context: "Restaurante España, web no responsive",
-    subject: "una idea para vuestra web",
-    body: `Hola [nombre],
+    style: "close",
+    context: "Restaurant in Barcelona, web not responsive",
+    subject: "an idea for your web",
+    body: `Hi [name],
 
-Estaba mirando restaurantes por Sevilla y vi El Rincón de Lola. Las reseñas están muy bien y la propuesta se nota cuidada.
+I was browsing restaurants in Barcelona and came across El Rincón de Lola. The reviews are great and the place looks well made.
 
-Lo que pasa es que cuando entré a vuestra web desde el móvil, casi me voy. Tarda en cargar y se descuadra. Mucha gente que busca dónde cenar en Sevilla os está encontrando ahí mismo y no se queda.
+The problem: when I opened their website from my phone, I almost left. It loads slowly and falls apart. A lot of people who search for a place to eat in Barcelona end up there and don't stay.
 
-Trabajamos con restaurantes haciendo que la web haga lo que tiene que hacer: que la persona reserve antes de cerrar la pestaña.
+We work with restaurants so the website does what it's supposed to: get people to book before they close the tab.
 
-Si quieres te enseño cómo lo planteamos, sin más.
+If you want, I'll show you how we did it, no more than that.
 
-Un saludo,
-Pablo`,
-  },
-  {
-    style: "casual",
-    context: "Restaurante España, web no responsive",
-    subject: "cosa rápida sobre vuestra web",
-    body: `Hola [nombre],
-
-Te escribo en plan rápido. El otro día buscaba dónde comer en Triana, vi El Rincón de Lola y entré a la web desde el móvil. Entendí poco y me fui.
-
-No es por daros caña, al revés: la carta y las reseñas valen mucho. Pero la web no acompaña, y ahí se está cayendo gente que ya os tenía elegidos.
-
-Ayudamos a restaurantes con esto. Si quieres te lo cuento en dos líneas.
-
-Pablo`,
-  },
-  {
-    style: "directo",
-    context: "Dermatólogo individual España, web vieja",
-    subject: "pacientes que buscan dermatólogo en Madrid",
-    body: `Hola Carlos,
-
-Vi tu consulta y entré desde el móvil porque quería ver horarios. Casi me voy: la web no carga bien y cuesta encontrar lo básico. La gente que busca dermatólogo en Madrid te está llegando ahí mismo y se está yendo.
-
-Ayudamos a consultas médicas a tener una web que transmita confianza y vaya rellenando la agenda sola, sin depender solo de seguros.
-
-¿Te paso un caso de un dermatólogo parecido y vemos si tiene sentido?
-
-Un saludo,
-Pablo`,
-  },
-  {
-    style: "cercano",
-    context: "Clínica dental España, mal SEO local",
-    subject: "una idea para Clínica Sonríe",
-    body: `Hola María,
-
-Estaba mirando dentistas en Valencia y di con Clínica Dental Sonríe. Las reseñas están muy bien y se nota que cuidáis mucho la atención.
-
-Lo que pasa es que cuando busqué "dentista Valencia" en Google, no aparecisteis hasta la página dos. La gente nueva que busca dentista en la ciudad casi nunca pasa de los primeros tres o cuatro resultados, y ahí está la competencia.
-
-Trabajamos con clínicas dentales para que aparezcan justo cuando la gente las necesita, sin que dependa solo de los pacientes de toda la vida.
-
-Si quieres te enseño cómo lo planteamos, sin más.
-
-Un saludo,
+Best,
 Pablo`,
   },
   {
     style: "casual",
-    context: "Centro de fisioterapia España, sin reserva online",
-    subject: "cosa rápida sobre vuestra web",
-    body: `Hola Iker,
+    context: "Restaurant in Barcelona, web not responsive",
+    subject: "quick thing about your web",
+    body: `Hi [name],
 
-Te escribo en plan rápido. El otro día me dolía la espalda, busqué fisio por Indautxu y me topé con Activa. Las reseñas pintaban bien, así que entré a la web. Quería pedir cita pero no podía: solo había un teléfono, eran las once de la noche.
+Quick one. I was looking for dinner in Triana, found El Rincón de Lola and opened the site from my phone. Got nothing.
 
-No es por deciros nada malo, al revés: el equipo se ve sólido y el sitio está cuidado. Pero ahí pasa esto: gente que ya os tenía elegidos se cae porque no puede reservar en el momento.
+Not to give you a hard time, the opposite: the menu and reviews are great. But the web doesn't back it up, and that's where people who already chose you are dropping off.
 
-Ayudamos a centros como el vuestro con esto. Si quieres te lo cuento en dos líneas.
+We help restaurants with this. If you want, I'll tell you in two lines.
+
+Pablo`,
+  },
+  {
+    style: "direct",
+    context: "Solo clinic in Madrid, old web",
+    subject: "patients looking for a dermatologist in Madrid",
+    body: `Hi Carlos,
+
+I saw your clinic and opened it from my phone because I wanted to see the hours. Almost left: the web loads badly and it's hard to find basic info. People looking for a dermatologist in Madrid are landing there and leaving.
+
+We help solo clinics get a web that conveys trust and fills the schedule on its own, without relying only on insurers.
+
+Want me to send a case of a similar clinic and see if it makes sense?
+
+Best,
+Pablo`,
+  },
+  {
+    style: "close",
+    context: "Dental clinic in Valencia, bad local SEO",
+    subject: "an idea for Clínica Sonríe",
+    body: `Hi María,
+
+I was looking at dentists in Valencia and came across Clínica Dental Sonríe. The reviews are great and you can tell they care about the attention.
+
+The issue: when I searched "dentist Valencia" on Google, you weren't on page one. New people looking for a dentist in the city rarely get past the first few results, and that's where the competition is.
+
+We work with dental clinics so they appear right when people need them, without depending only on lifelong patients.
+
+If you want, I'll show you how we plan it, no more than that.
+
+Best,
+Pablo`,
+  },
+  {
+    style: "casual",
+    context: "Physiotherapy center in Bilbao, no online booking",
+    subject: "quick thing about your web",
+    body: `Hi Iker,
+
+Quick one. My back hurt the other day, I searched for a physio in Indautxu and found Activa. Reviews looked good, so I opened the web. Wanted to book a visit but there was only a phone number, it was 11pm.
+
+Not to say anything bad about it, the team looks solid and the site is taken care of. But here's the thing: people who already chose you are falling off because they can't book in the moment.
+
+We help centers like yours with this. If you want, I'll tell you in two lines.
 
 Pablo`,
   },
@@ -133,46 +133,46 @@ Pablo`,
 
 export const EMAIL_EXAMPLES_FOLLOWUP: EmailExample[] = [
   {
-    style: "directo",
-    context: "Restaurante España, follow-up tras initial",
-    subject: "¿lo viste?",
-    body: `Hola [nombre],
+    style: "direct",
+    context: "Restaurant in Barcelona, follow-up after initial",
+    subject: "did you see it?",
+    body: `Hi [name],
 
-La semana pasada te escribí sobre la web de El Rincón de Lola. Igual se te pasó.
+Last week I wrote about the web of El Rincón de Lola. Maybe you missed it.
 
-Lo resumo: estáis perdiendo gente que ya os tenía elegidos porque la web no carga bien desde el móvil. Es arreglable rápido.
+The gist: you're losing people who already chose you because the web loads badly on mobile. Easy fix.
 
-Si te interesa que te enseñe cómo, dime.
+If you're interested, I'll show you how, just say the word.
 
-Un saludo,
+Best,
 Pablo`,
   },
   {
-    style: "cercano",
-    context: "Clínica dental España, follow-up cambiando de ángulo a SEO",
-    subject: "continuando con lo de Sonríe",
-    body: `Hola María,
+    style: "close",
+    context: "Dental clinic in Valencia, follow-up shifting angle to SEO",
+    subject: "continuing with Sonríe",
+    body: `Hi María,
 
-Te escribí hace unos días sobre Clínica Sonríe, no sé si lo viste en medio del lío del día a día.
+I wrote a few days ago about Clínica Sonríe, maybe you missed it in the daily chaos.
 
-Solo te dejo otra forma de verlo: mientras esto no se mueve, los pacientes que buscan dentista en Valencia están aterrizando en otras clínicas. Cada día.
+Just to leave another way of seeing it: while this doesn't move, patients who look for a dentist in Valencia are landing on other clinics. Every day.
 
-Si quieres que te lo explique en cinco minutos, dime cuándo te va bien.
+If you want, I'll explain it in five minutes, just tell me when it's good for you.
 
-Un saludo,
+Best,
 Pablo`,
   },
   {
     style: "casual",
-    context: "Centro fisio España, follow-up suave",
-    subject: "rápido sobre Activa",
-    body: `Hola Iker,
+    context: "Physiotherapy center in Bilbao, soft follow-up",
+    subject: "quick about Activa",
+    body: `Hi Iker,
 
-Sé que andas a tope, no te robo más de un minuto.
+I know you're swamped, I'm not stealing more than a minute.
 
-Lo de poder reservar cita desde la web sigue ahí. Mientras tanto, gente que ya os tenía elegidos se está cayendo por no poder cerrar a las once de la noche.
+The online booking thing is still there. Meanwhile, people who already chose you are dropping off because they can't close a booking at 11pm.
 
-Si te encaja, te lo cuento. Si no, te dejo en paz.
+If it fits, I'll tell you. If not, leave me alone.
 
 Pablo`,
   },
@@ -184,29 +184,29 @@ Pablo`,
 
 export const EMAIL_EXAMPLES_BREAKUP: EmailExample[] = [
   {
-    style: "directo",
-    context: "Restaurante España, breakup",
-    subject: "cierro con esto",
-    body: `Hola [nombre],
+    style: "direct",
+    context: "Restaurant in Barcelona, breakup",
+    subject: "closing with this",
+    body: `Hi [name],
 
-Es la última vez que os escribo, prometido.
+It's the last time I write to you, promise.
 
-Si más adelante te pica la curiosidad de ver cómo está vuestra web frente a otros restaurantes de Sevilla, escríbeme y te lo paso. Sin más.
+If later you're curious about how your web compares to other restaurants in Barcelona, write to me and I'll send it. Nothing more.
 
-Un saludo,
+Best,
 Pablo`,
   },
   {
-    style: "cercano",
-    context: "Clínica dental España, breakup respetuoso",
-    subject: "te dejo descansar",
-    body: `Hola María,
+    style: "close",
+    context: "Dental clinic in Valencia, respectful breakup",
+    subject: "resting",
+    body: `Hi María,
 
-Entiendo que no es el momento o que simplemente no encajamos. Sin problema.
+I understand it's not the moment or that we simply don't fit. No problem.
 
-Si en algún momento queréis ver cómo otras clínicas dentales de Valencia están captando pacientes desde Google, ya sabes dónde encontrarme.
+If at any point you want to see how other dental clinics in Valencia are capturing patients from Google, you know where to find me.
 
-Un saludo,
+Best,
 Pablo`,
   },
 ];
@@ -217,34 +217,34 @@ Pablo`,
 
 export const WHATSAPP_EXAMPLES_INITIAL: WhatsAppExample[] = [
   {
-    style: "directo",
-    context: "Taller mecánico México, sin web",
-    message: `Hola [nombre], soy Pablo de VanguardIA. Busqué AutoExpress en Google y no encontré web. La gente que busca taller mecánico en Guadalajara los está encontrando, pero a la competencia. Te interesa que te cuente cómo lo arreglamos?`,
+    style: "direct",
+    context: "Auto repair shop in Mexico, no web",
+    message: `Hi [name], I'm Pablo from VanguardIA. I searched AutoExpress on Google and found no web. The people who look for an auto repair shop in Guadalajara are finding the competition instead. Interested in hearing how we fix that?`,
   },
   {
     style: "permission",
-    context: "Taller mecánico México, sin web",
-    message: `Hola [nombre], soy Pablo de VanguardIA. Una pregunta rápida: AutoExpress no aparece en Google cuando alguien busca taller en Guadalajara. Te paso 2 líneas de cómo lo solucionamos para otros talleres parecidos?`,
+    context: "Auto repair shop in Mexico, no web",
+    message: `Hi [name], I'm Pablo from VanguardIA. Quick question: AutoExpress doesn't show up on Google when someone searches for an auto repair shop in Guadalajara. Want me to send you 2 lines on how we solved it for similar shops?`,
   },
   {
-    style: "observacion",
-    context: "Taller mecánico México, sin web",
-    message: `Hola [nombre], te escribe Pablo de VanguardIA. Busqué taller en Guadalajara en Google y AutoExpress no aparece, aun con tan buenas reseñas. Eso son clientes que se van a la competencia. Te puedo hacer un análisis de cuántos están perdiendo, te interesa?`,
+    style: "observation",
+    context: "Auto repair shop in Mexico, no web",
+    message: `Hi [name], Pablo from VanguardIA here. I searched for an auto repair shop in Guadalajara on Google and AutoExpress didn't show up, even with good reviews. That's customers walking to the competition. Want me to analyze how many are losing?`,
   },
   {
-    style: "directo",
-    context: "Cardiólogo individual México (usted, médico senior)",
-    message: `Hola Doctor Vargas, soy Pablo de VanguardIA. Busqué cardiólogo en Monterrey en Google y no apareció su consulta. Los pacientes que están buscando ahorita lo están encontrando, pero a la competencia. Le interesa que le cuente cómo lo solucionamos para otros médicos parecidos?`,
+    style: "direct",
+    context: "Individual cardiologist in Monterrey (you, senior doctor)",
+    message: `Hi Dr. Vargas, I'm Pablo from VanguardIA. I searched for a cardiologist in Monterrey on Google and the clinic didn't appear. The patients who are looking right now are finding the competition. Interested in hearing how we solved that for similar doctors?`,
   },
   {
     style: "permission",
-    context: "Clínica estética España, mal SEO local",
-    message: `Hola María, soy Pablo de VanguardIA. Una pregunta rápida: Clínica Bella no aparece en Google cuando alguien busca depilación láser en Sevilla. Te paso 2 líneas de cómo lo solucionamos para otras clínicas estéticas?`,
+    context: "Aesthetic clinic in Spain, bad local SEO",
+    message: `Hi María, I'm Pablo from VanguardIA. Quick question: Bella Clinic doesn't show up on Google when someone searches for laser hair removal in Seville. Want me to send you 2 lines on how we solved it for other aesthetic clinics?`,
   },
   {
-    style: "observacion",
-    context: "Centro médico Colombia, sin reserva online",
-    message: `Hola Andrea, te escribe Pablo de VanguardIA. Entré a la web de Centro Salud Total para ver cómo piden cita y no se puede en línea, solo por teléfono. Eso son pacientes que se cansan de llamar y van a otra. Te puedo armar un análisis de cuánta agenda están perdiendo, te interesa?`,
+    style: "observation",
+    context: "Medical center in Colombia, no online booking",
+    message: `Hi Andrea, Pablo from VanguardIA here. I checked Centro Salud Total's web to see how they book appointments and you can't do it online, only by phone. That's patients getting tired of calling and going elsewhere. Want me to build an analysis of how much they're losing?`,
   },
 ];
 
@@ -254,19 +254,19 @@ export const WHATSAPP_EXAMPLES_INITIAL: WhatsAppExample[] = [
 
 export const WHATSAPP_EXAMPLES_FOLLOWUP: WhatsAppExample[] = [
   {
-    style: "directo",
-    context: "Taller mecánico México, follow-up",
-    message: `Hola [nombre], soy Pablo de VanguardIA otra vez. Te escribí hace unos días sobre AutoExpress y no aparecer en Google. Igual se perdió. Te interesa que te lo cuente?`,
+    style: "direct",
+    context: "Auto repair shop in Mexico, follow-up",
+    message: `Hi [name], Pablo from VanguardIA again. I wrote about AutoExpress and it doesn't show up on Google. Maybe you missed it. Interested in hearing about it?`,
   },
   {
     style: "permission",
-    context: "Clínica estética España, follow-up",
-    message: `Hola María, te escribo otra vez sobre Clínica Bella y la búsqueda de depilación láser en Sevilla. Sé que andas liada. Te paso 2 líneas y ya tú decides si tiene sentido?`,
+    context: "Aesthetic clinic in Spain, follow-up",
+    message: `Hi María, I'm writing again about Bella Clinic and the laser hair removal search in Seville. I know you're busy. Want me to send the 2 lines and you decide if it makes sense?`,
   },
   {
-    style: "observacion",
-    context: "Centro médico Colombia, follow-up sobre tema de citas",
-    message: `Hola Andrea, te escribí hace unos días sobre el tema de pedir cita en línea en Centro Salud Total. Sigue ahí esa cantidad de pacientes que llaman, no contesta nadie a la primera, y se van. Te animas a verlo?`,
+    style: "observation",
+    context: "Medical center in Colombia, follow-up about booking issue",
+    message: `Hi Andrea, I wrote to you a few days ago about booking appointments online at Centro Salud Total. Still the same number of patients calling, no one answers at first, and they go elsewhere. Want to look at it?`,
   },
 ];
 
@@ -276,19 +276,19 @@ export const WHATSAPP_EXAMPLES_FOLLOWUP: WhatsAppExample[] = [
 
 export const WHATSAPP_EXAMPLES_BREAKUP: WhatsAppExample[] = [
   {
-    style: "directo",
-    context: "Taller mecánico México, breakup",
-    message: `Hola [nombre], última vez, prometido. Si más adelante te interesa que AutoExpress salga en Google cuando alguien busca taller en Guadalajara, escríbeme y lo vemos. Saludos, Pablo.`,
+    style: "direct",
+    context: "Auto repair shop in Mexico, breakup",
+    message: `Hi [name], I'm Pablo from VanguardIA. I wrote about AutoExpress not showing up on Google and I'm closing with this. If later you're curious about how your web compares, write to me and I'll send it. Take care.`,
   },
   {
-    style: "cercano",
-    context: "Clínica estética España, breakup respetuoso",
-    message: `Hola María, no quiero seguir ocupando espacio. Si en algún momento queréis ver cómo otras clínicas de Sevilla están captando pacientes desde Google, ya sabes dónde escribirme. Un saludo.`,
+    style: "close",
+    context: "Aesthetic clinic in Spain, breakup respectful",
+    message: `Hi María, I don't want to take up space anymore. If at any point you want to see how other clinics in Seville are capturing patients from Google, you know where to write me. Take care.`,
   },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Formatters para inyectar en el prompt del LLM
+// Formatters to inject into the LLM prompt
 // ─────────────────────────────────────────────────────────────────────────────
 
 function pickEmailBank(purpose: CopyPurpose): EmailExample[] {
@@ -304,8 +304,8 @@ function pickWhatsAppBank(purpose: CopyPurpose): WhatsAppExample[] {
 }
 
 /**
- * Devuelve los primeros `maxExamples` ejemplos del bank para `purpose`,
- * ya formateados como bloque de texto listo para concatenar al prompt.
+ * Returns the first `maxExamples` examples of the bank for `purpose`,
+ * already formatted as a text block ready to concatenate into the prompt.
  */
 export function formatEmailExamples(purpose: CopyPurpose, maxExamples = 3): string {
   const bank = pickEmailBank(purpose);
@@ -313,9 +313,9 @@ export function formatEmailExamples(purpose: CopyPurpose, maxExamples = 3): stri
   if (picked.length === 0) return "";
   return picked
     .map(
-      (ex, i) => `EJEMPLO ${i + 1} — estilo "${ex.style}" — ${ex.context}
-Asunto: ${ex.subject}
-Cuerpo:
+      (ex, i) => `EXAMPLE ${i + 1} — style "${ex.style}" — ${ex.context}
+Subject: ${ex.subject}
+Body:
 ${ex.body}`,
     )
     .join("\n\n---\n\n");
@@ -327,74 +327,74 @@ export function formatWhatsAppExamples(purpose: CopyPurpose, maxExamples = 3): s
   if (picked.length === 0) return "";
   return picked
     .map(
-      (ex, i) => `EJEMPLO ${i + 1} — estilo "${ex.style}" — ${ex.context}
+      (ex, i) => `EXAMPLE ${i + 1} — style "${ex.style}" — ${ex.context}
 ${ex.message}`,
     )
     .join("\n\n---\n\n");
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Banlists y reglas anti-AI-smell (compartidas entre email/whatsapp/templates)
+// Banlists and anti-AI-smell rules (shared between email/whatsapp/templates)
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * Bloque de texto que se inyecta en cada prompt para reducir el "AI smell".
- * Está en español porque las prohibiciones léxicas son específicas del idioma.
+ * Text block injected into every prompt to reduce the "AI smell".
+ * Written in English because the banned-word lists are language specific.
  */
-export const ANTI_AI_RULES = `REGLAS ANTI-"COPY DE IA" (CRÍTICAS):
+export const ANTI_AI_RULES = `RULES AGAINST "AI COPY" (CRITICAL):
 
-VOCABULARIO PROHIBIDO (delata copy generado por IA, NO uses):
-aprovechar, profundizar, robusto, fluido, holístico, sinergias, integral, panorama, desbloquear, potenciar, fomentar, navegar (en sentido figurado), revolucionar, transformar, optimizar (en exceso), maximizar, capitalizar.
+FORBIDDEN VOCABULARY (flags AI-generated copy, DO NOT use):
+leverage, deep dive, robust, fluid, holistic, synergies, integral, panorama, unlock, amplify, foster, navigate (figurative sense), revolutionize, transform, optimize (excessive), maximize, capitalize.
 
-CONECTORES PROHIBIDOS (suenan a redacción académica, NO uses):
-asimismo, en este sentido, cabe destacar, vale la pena mencionar, por otro lado (como conector), en definitiva, en resumen, no obstante (en mensajes informales), es importante destacar que.
+FORBIDDEN CONNECTORS (sound academic, DO NOT use):
+moreover, in this sense, it should be noted, worth mentioning, on the other hand (as a connector), ultimately, in summary, however (in informal messages), it's important to highlight that.
 
-APERTURAS PROHIBIDAS (matan el reply rate, NUNCA empieces así):
-- "Espero que estés bien" / "Espero que este email te encuentre bien"
-- "Mi nombre es X y trabajo en Y"
-- "Te escribo porque..."
-- "Quería ponerme en contacto..."
-- "Estimado/a..." / "A quien corresponda"
-- "Reciba un cordial saludo"
+FORBIDDEN OPENINGS (kill reply rate, NEVER start like this):
+- "Hope you're well" / "Hope this email finds you well"
+- "My name is X and I work at Y"
+- "I'm writing to..."
+- "I wanted to reach out..."
+- "Hi [recipient]" / "To whom it may concern"
+- "Receive my cordial regards"
 
-CIERRES PROHIBIDOS:
-"Atentamente", "Cordiales saludos", "Reciba un cordial saludo".
-USA: "Un saludo," (España) o "Quedo atento/a," (LatAm).
+FORBIDDEN CLOSINGS:
+"Sincerely", "Kind regards", "Receive my cordial regards".
+USE: "Best," or "Keep me in mind,".
 
-VARIACIÓN DE LONGITUD DE FRASE (obligatoria):
-Mezcla frases cortas (3-7 palabras) con frases medias o largas (15-25). NUNCA tres frases seguidas del mismo largo. Permite alguna frase incompleta natural ("Sin más.", "Si te encaja.", "Si tiene sentido.").
+VARIATION OF SENTENCE LENGTH (mandatory):
+Mix short sentences (3-7 words) with medium or long ones (15-25). NEVER three sentences in a row of the same length. Allow some natural sentence fragments ("No more.", "If it fits.", "If it makes sense.").
 
-PALABRAS SPAM (matan deliverability):
-gratis, sin compromiso, garantizado, oferta exclusiva, urgente, descuento, sin coste, click aquí, auditoría gratis. USA alternativas naturales: "te paso un análisis", "te enseño cómo", "te lo cuento en dos líneas".`;
+SPAM WORDS (kill deliverability):
+free, no commitment, guaranteed, exclusive offer, urgent, discount, no cost, click here, free audit. USE natural alternatives: "send you an analysis", "teach you how", "tell you in two lines".`;
 
 export const PERSONA_BLOCK = (fromName: string, agencyName: string) =>
-  `PERSONA DEL REMITENTE:
-Eres ${fromName}, escribiendo desde ${agencyName}. Es lunes por la mañana, tienes café en la mano y mandas este mensaje entre reuniones, en un par de minutos. NO eres un departamento de marketing escribiendo copy. Eres una persona concreta que ha visto algo de este negocio y tiene una idea para él. Tu objetivo no es vender en este mensaje, es abrir conversación.
+  `THE SENDER:
+You are ${fromName}, writing from ${agencyName}. It's Monday morning, you have coffee in hand and you're sending this message between meetings, in a couple of minutes. You are NOT a marketing department writing copy. You are a real person who saw something about this business and has an idea for them. Your goal is not to sell in this message, it's to open a conversation.
 
-Escribes como hablarías a un colega de otro sector que no conoces todavía: con respeto pero sin formalismo, con criterio pero sin venderte, breve porque sabes que el otro está ocupado.`;
+You write the way you'd talk to a colleague from another field who doesn't know you yet: respectful but not formal, with your own judgment but without pushing, brief because you know the other person is busy.`;
 
 export const SELF_CHECK_EMAIL = (maxWords: number) =>
-  `ANTES DE RESPONDER, REVISA tu redacción contra estos puntos. Si alguno falla, REESCRIBE antes de devolver el JSON:
+  `BEFORE RESPONDING, review your wording against these points. If any one fails, REWRITE before returning the JSON:
 
-1. ¿Hay algún em-dash o guion largo (—)? Reemplaza por coma, punto, dos puntos o paréntesis.
-2. ¿Empieza con "Espero que", "Mi nombre es", "Te escribo porque", "Estimado/a", "A quien corresponda"? Reescribe la apertura.
-3. ¿Aparece alguna palabra de la VOCABULARIO PROHIBIDO o CONECTORES PROHIBIDOS? Reemplaza.
-4. ¿Más de ${maxWords} palabras en el cuerpo? Acorta.
-5. ¿Hay tres frases seguidas con la misma longitud? Mezcla cortas y largas.
-6. ¿El CTA pide reunión directa, calendario, o suena a vendedor? Suaviza a "interest check" suave.
-7. ¿El cierre es "Atentamente" o similar? Cambia a "Un saludo," o "Quedo atento/a,".
-8. ¿Suena a plantilla o a folleto en algún punto? Si sí, dale un giro más humano.
+1. Any em-dash or long dash (—)? Replace with comma, period, colon, or parentheses.
+2. Does it start with "Hope you're well", "My name is", "I'm writing to", "Hi [recipient]", "To whom it may concern"? Rewrite the opening.
+3. Any forbidden vocabulary or forbidden connector word? Replace it.
+4. More than ${maxWords} words in the body? Shorten it.
+5. Three sentences in a row with the same length? Mix short and long.
+6. Is the CTA asking for a direct meeting, calendar, or sounding like a seller? Soften to a soft interest check.
+7. Is the closing "Sincerely" or similar? Change to "Best," or "Keep me in mind,".
+8. Does it sound like a template or a brochure anywhere? If yes, give it a more human spin.
 
-Devuelve ÚNICAMENTE la versión final en JSON, ya pasada por estos checks.`;
+Return ONLY the final version in JSON, already passed these checks.`;
 
-export const SELF_CHECK_WHATSAPP = `ANTES DE RESPONDER, asegúrate de que el mensaje cumple TODOS estos puntos. Si alguno falla, REESCRIBE:
+export const SELF_CHECK_WHATSAPP = `BEFORE RESPONDING, make sure the message meets ALL of these points. If any one fails, REWRITE:
 
-1. El mensaje es texto plano que el destinatario lee tal cual en su teléfono. Nada más, nada de formato especial.
-2. ¿Hay algún em-dash o guion largo (—)? Reemplaza.
-3. ¿Algún signo de apertura "¿" o "¡"? Quita (en WhatsApp nadie los usa).
-4. ¿Aparece "Espero que estés bien", "Mi nombre es", o palabra de la banlist? Reescribe.
-5. ¿Más de 300 caracteres? Acorta.
-6. ¿Más de 1 emoji? Quita los extras (mejor 0).
-7. ¿Hay algún URL, link o dominio? Quita (genera bloqueo).
-8. ¿Pide reunión/llamada/calendario directo? Suaviza a pregunta abierta tipo "te interesa?".
-9. ¿Suena a plantilla? Si sí, dale un giro más humano.`;
+1. The message is plain text the recipient reads as-is on their phone. Nothing more, no special formatting.
+2. Any em-dash or long dash (—)? Replace.
+3. Any opening sign "¿" or "¡"? Remove (WhatsApp users don't use them).
+4. Does it include "Hope you're well", "My name is", or a banned word? Rewrite.
+5. More than 300 characters? Shorten.
+6. More than 1 emoji? Remove extras (better 0).
+7. Any URL, link, or domain? Remove (triggers blocking).
+8. Does it ask for a meeting/call/calendar directly? Soften to an open question like "interested?".
+9. Does it sound like a template? If yes, give it a more human spin.`;

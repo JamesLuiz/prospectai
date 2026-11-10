@@ -38,8 +38,8 @@ const OPENAI_MODEL = process.env.OPENAI_MODEL || "gpt-5-mini";
 // System prompt for the API providers (Anthropic/Gemini/Mistral/OpenAI). For `claude_cli` the
 // CLI's own default copywriting-neutral system prompt is used unless overridden.
 const STRUCTURED_SYSTEM_PROMPT =
-  "Eres un asistente experto en copywriting B2B. Sigue las instrucciones del usuario al pie de la letra " +
-  "y responde únicamente con el objeto solicitado, sin texto adicional, sin comentarios y sin markdown.";
+  "You are an expert assistant in B2B copywriting. Follow the user instructions to the letter " +
+  "and respond only with the requested object, without extra text, without comments and without markdown.";
 
 // Lazily build and cache the Anthropic client, re-creating it when the resolved
 // API key changes so keys edited in the app take effect without a restart.

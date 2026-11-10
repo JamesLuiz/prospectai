@@ -37,7 +37,7 @@ const STEALTH_INIT = `
 function launchOptions(headless: boolean) {
   return {
     headless,
-    locale: getSetting("workana_locale") || "es-AR",
+    locale: getSetting("workana_locale") || "en-US",
     timezoneId: getSetting("workana_timezone") || "America/Argentina/Buenos_Aires",
     viewport: { width: 1366, height: 768 },
     userAgent: DEFAULT_UA,

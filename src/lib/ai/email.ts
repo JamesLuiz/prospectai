@@ -64,78 +64,78 @@ export async function generateEmail(
   if (analysis.aiAgentOpportunities?.length > 0) issueContext.push(`AI opportunities: ${analysis.aiAgentOpportunities.join(", ")}`);
 
   const stepContext = sequenceStep && sequenceStep > 1
-    ? `\nESTE ES FOLLOW-UP #${sequenceStep - 1}. El negocio ya recibió ${sequenceStep - 1} mensaje(s) previo(s). NO repitas lo que probablemente ya dijiste. Cambia el ángulo: si en el inicial hablaste de web, ahora habla de SEO o de IA. Sé más breve y directo. Puedes hacer referencia a que ya escribiste antes ("la semana pasada te escribí…").`
+    ? `\nTHIS IS FOLLOW-UP #${sequenceStep - 1}. The business already got ${sequenceStep - 1} message(s) before. DO NOT repeat what you probably already told them. Change the angle: if the first message touched on web, now talk about SEO or AI. Be shorter and more direct. You can reference that you already wrote ("I wrote to you last week…").`
     : "";
 
-  const extraInstructions = customInstructions ? `\nINSTRUCCIONES ADICIONALES DEL USUARIO: ${customInstructions}` : "";
+  const extraInstructions = customInstructions ? `\nADDITIONAL INSTRUCTIONS FROM THE USER: ${customInstructions}` : "";
 
   const examplesBlock = formatEmailExamples(purpose, 3);
 
   const prompt = `${PERSONA_BLOCK(fromName, ctx.name)}
 
-CONTEXTO DE LA AGENCIA QUE ESCRIBE (identidad y servicios; NO inventes datos que no estén aquí):
+AGENCY CONTEXT (identity and services; DO NOT invent data that is not here):
 ${formatAgencyContextBlock(ctx, { identityOnly: true })}
 
-DATOS DEL NEGOCIO AL QUE ESCRIBES:
-- Nombre: ${businessName}
-- Categoría: ${businessCategory || "Sin especificar"}
-- Ciudad: ${city || "Sin especificar"}
-- Web actual: ${websiteUrl || "No tiene"}
+BUSINESS DATA YOU'RE WRITING TO:
+- Name: ${businessName}
+- Category: ${businessCategory || "Not specified"}
+- City: ${city || "Not specified"}
+- Current web: ${websiteUrl || "None"}
 
-ANÁLISIS DE PRESENCIA DIGITAL:
-- Score web: ${analysis.qualityScore}/100
-- Score SEO: ${analysis.seoScore ?? "N/A"}/100
+DIGITAL PRESENCE ANALYSIS:
+- Web score: ${analysis.qualityScore}/100
+- SEO score: ${analysis.seoScore ?? "N/A"}/100
 ${issueContext.map((i) => `- ${i}`).join("\n")}
-- Resumen: ${analysis.summary}
+- Summary: ${analysis.summary}
 
-SERVICIOS RELEVANTES PARA ESTE NEGOCIO:
+RELEVANT SERVICES FOR THIS BUSINESS:
 ${recommendedServices}
 
-TONO PEDIDO: ${tone}
+REQUESTED TONE: ${tone}
 ${stepContext}
 ${extraInstructions}
 
-PRINCIPIO FUNDAMENTAL — EMAIL FRÍO, CORTO Y RELEVANTE:
-La persona no te conoce y le dedica 5 segundos. Cuanto más corto y específico, mejor. NO menciones proyectos, clientes ni casos concretos que el destinatario no conoce, y NO presentes tu agencia ni su tamaño, productos o trayectoria (nada de "somos un directorio con X doctores", "trabajamos con Y", "tenemos años de experiencia"): todo eso es relleno que al lector no le importa en un primer mensaje. Tu agencia aparece solo al firmar y, si hace falta, en "soy [nombre] de [agencia]". TODA la personalización sale de lo que OBSERVASTE en la auditoría de ESTE negocio, nada más.
+CORE PRINCIPLE — COLD EMAIL, SHORT AND RELEVANT:
+The person doesn't know you and gives you 5 seconds. The shorter and more specific, the better. DO NOT mention projects, clients or concrete cases the recipient doesn't know, and DO NOT present your agency or its size, products or track record (nothing like "we're a directory with X doctors", "we work with Y", "we've been doing this for years"): all of that is filler the reader doesn't care about in a first message. Your agency only shows up when signing and, if needed, in "I'm [name], from [agency]". ALL personalization comes from what you OBSERVE in THIS business's audit, nothing more.
 
-ENFOQUE EN BENEFICIO: al destinatario le importan MÁS CLIENTES y MÁS VENTAS, no los tecnicismos. Traduce SIEMPRE lo que observaste a impacto de negocio:
-- "Sin SSL" → "ven 'sitio no seguro' y se van a la competencia"
-- "No responsive" → "la mayoría entra desde el móvil y no puede navegar bien"
-- "SEO bajo" → "cuando alguien busca [su categoría] en [su ciudad], aparece la competencia y ellos no"
-- "Sin web" → "quien los busca en Google no los encuentra"
+BENEFIT FOCUS: the recipient cares about MORE CLIENTS and MORE SALES, not technical jargon. ALWAYS translate what you observed into business impact:
+- "No SSL" → "they see 'not secure' and go to the competition"
+- "Not responsive" → "most come in from mobile and can't navigate well"
+- "Low SEO" → "when someone searches [their category] in [their city], the competition shows up and they don't"
+- "No web" → "whoever searches for them on Google can't find them"
 
-ESTRUCTURA (3 bloques cortos, sin relleno):
-1. APERTURA = la observación concreta de la auditoría (1 frase). Directo a algo VERDADERO y específico de ESTE negocio. PROHIBIDO abrir con cumplidos vagos o de relleno ("se nota que tienen recorrido", "se nota que llevan tiempo atendiendo", "tienen un gran servicio"): suenan huecos e insinceros. Si no tienes una observación específica y sincera, abre directo con el punto útil, sin halago.
-2. IMPACTO (1-2 frases): qué clientes o ventas pierden por eso y, en una frase, cómo lo resuelves. Una sola idea, sin listar tecnicismos.
-3. CTA suave (1 frase): pregunta abierta o interest-check. NUNCA pidas reunión, llamada ni calendario en el primer email.
+STRUCTURE (3 short blocks, no filler):
+1. OPENING = the concrete observation from the audit (1 sentence). Direct about something TRUE and specific to THIS business. PROHIBITED to open with vague filler praise ("it looks like they have a track record", "it looks like they've been caring for years", "they have a great service"): it sounds hollow and insincere. If you don't have a specific, honest observation, open directly with the useful point, no praise.
+2. IMPACT (1-2 sentences): what clients or sales are lost because of it and, in one sentence, how you solve it. One single idea, no listing of jargon.
+3. SOFT CTA (1 sentence): open question or interest check. NEVER ask for a meeting, call or calendar in the first email.
 
-LONGITUD: cuerpo de 40 a ${maxWords} palabras, NUNCA más. Cuanto más corto, mejor (50-70 ideal). Si te pasas, recorta hasta cumplir. Máximo 3 párrafos cortos.
+LENGTH: body of 40 to ${maxWords} words, NEVER more. The shorter, the better (50-70 ideal). If you exceed it, cut down to comply. Maximum 3 short paragraphs.
 
-ASUNTO: 4-7 palabras, en minúsculas (sentence case), que despierte curiosidad sobre el BENEFICIO o haga referencia específica al negocio. NO mayúsculas, NO signos de exclamación, NO palabras spam.
+SUBJECT: 4-7 words, lowercase (sentence case), that sparks curiosity about the BENEFIT or references something specific about the business. NO caps, NO exclamation marks, NO spam words.
 
 ${ANTI_AI_RULES}
 
-REGLAS ADICIONALES:
-1. Idioma: ${localeLabel}
-2. Preséntate como "${fromName}, de ${ctx.name}" si lo necesitas. NUNCA digas "Soy ${ctx.name}" ni te presentes como si fueras la empresa.
-3. NO uses jerga técnica sin traducir a impacto de negocio (no "SSL", "responsive", "SEO", "meta tags" sueltos).
-4. NO añadas pie de página legal ni texto de baja, el sistema los inyecta automáticamente.
-5. Firma solo con el nombre (sin cargo, sin URL).
+ADDITIONAL RULES:
+1. LANGUAGE: ${localeLabel}
+2. Present yourself as "${fromName}, from ${ctx.name}" if needed. NEVER say "I'm ${ctx.name}" nor present yourself as if you were the company itself.
+3. DO NOT use technical jargon without translating it into business impact (not "SSL", "responsive", "SEO", "meta tags" alone).
+4. Do not add legal footer or unsubscribe text; the system injects it automatically.
+5. Sign off with just the name (no title, no URL).
 
-ADAPTACIÓN REGIONAL (CRÍTICA):
-El negocio está en ${city || "ubicación no especificada"}. Adapta el idioma al país de ESA ciudad, NO al país de la agencia. Si la ciudad está en México, español mexicano. Si en Argentina, voseo argentino. Si en España, español de España. Esto es OBLIGATORIO.
+REGIONAL ADAPTATION (CRITICAL):
+The business is in ${city || "location not specified"}. Adapt the language to the country of THAT city, NOT the agency. If the city is in Mexico, Mexican Spanish. If in Argentina, voseo. If in Spain, Spanish from Spain. This is MANDATORY.
 ${writingRules}
 
-EJEMPLOS DEL ESTILO QUE QUEREMOS (referencia obligatoria de tono, no copies literal):
+EXAMPLES OF THE STYLE WE WANT (reference tone, don't copy literally):
 ${examplesBlock}
 
 ${SELF_CHECK_EMAIL(maxWords)}
 
-Responde SOLO con JSON válido (sin markdown, sin backticks):
+Respond ONLY with valid JSON (no markdown, no backticks):
 {
-  "subject": "asunto del email",
-  "bodyHtml": "cuerpo del email en HTML mínimo (<p>, <b>, <br>, <a>)",
-  "bodyText": "versión texto plano del email"
+  "subject": "email subject",
+  "bodyHtml": "email body in minimal HTML (<p>, <b>, <br>, <a>)",
+  "bodyText": "plain text version of the email"
 }`;
 
   return withRetry(
@@ -167,50 +167,50 @@ export async function regenerateEmail(
 
   const prompt = `${PERSONA_BLOCK(fromName, ctx.name)}
 
-Necesitas REGENERAR un email de prospección que ya tenías escrito, aplicando un nuevo tono o instrucciones.
+You need to REGENERATE a cold outreach email you already wrote, applying a new tone or instructions.
 
-CONTEXTO DE LA AGENCIA QUE ESCRIBE (identidad y servicios; NO inventes datos que no estén aquí):
+AGENCY CONTEXT (identity and services; DO NOT invent data that is not here):
 ${formatAgencyContextBlock(ctx, { identityOnly: true })}
 
-DATOS DEL NEGOCIO:
-- Nombre: ${businessName}
-- Categoría: ${businessCategory || "Sin especificar"}
-- Ciudad: ${city || "Sin especificar"}
-- Web: ${websiteUrl || "No tiene"}
-- Calidad web: ${analysis.qualityScore}/100
+BUSINESS DATA:
+- Name: ${businessName}
+- Category: ${businessCategory || "Not specified"}
+- City: ${city || "Not specified"}
+- Web: ${websiteUrl || "None"}
+- Web quality: ${analysis.qualityScore}/100
 - SEO: ${analysis.seoScore ?? "N/A"}/100
 - Issues: ${sanitizeIssues(analysis.issues).join(", ")}
-- Oportunidades SEO: ${sanitizeIssues(analysis.seoIssues).join(", ")}
-- Oportunidades IA: ${(analysis.aiAgentOpportunities || []).join(", ")}
+- SEO opportunities: ${sanitizeIssues(analysis.seoIssues).join(", ")}
+- AI opportunities: ${(analysis.aiAgentOpportunities || []).join(", ")}
 
-EMAIL ANTERIOR:
-Asunto: ${previousSubject}
-Cuerpo: ${previousBody}
+PREVIOUS EMAIL:
+Subject: ${previousSubject}
+Body: ${previousBody}
 
-NUEVO TONO: ${tone}
-INSTRUCCIONES ADICIONALES: ${instructions || "Solo cambia el tono"}
-Idioma: ${localeLabel}
+NEW TONE: ${tone}
+ADDITIONAL INSTRUCTIONS: ${instructions || "Just change the tone"}
+LANGUAGE: ${localeLabel}
 
-PRINCIPIO CLAVE: el email se centra en lo que el destinatario GANA (más clientes, más ventas, más visibilidad), NO en listar problemas técnicos. Cada problema se traduce a impacto de negocio. NO uses "gratis", "sin compromiso", "auditoría gratis" — usa alternativas naturales.
+CORE KEY PRINCIPLE: the email focuses on what the recipient GAINS (more clients, more sales, more visibility), NOT on listing technical problems. Every problem is translated into business impact. DO NOT use "free", "no commitment", "free audit" — use natural alternatives.
 
-NO añadas pie legal ni texto de baja, el sistema los inyecta.
+Do not add legal footer or unsubscribe text; the system injects it.
 
 ${ANTI_AI_RULES}
 
-ADAPTACIÓN REGIONAL (CRÍTICA):
-El negocio está en ${city || "ubicación no especificada"}. Adapta al país de ESA ciudad. Si está en México, español mexicano. Si en Argentina, voseo. Si en España, español de España.
+REGIONAL ADAPTATION (CRITICAL):
+The business is in ${city || "location not specified"}. Adapt to the country of THAT city. If in Mexico, Mexican Spanish. If in Argentina, voseo. If in Spain, Spanish from Spain.
 ${writingRules}
 
-EJEMPLOS DEL ESTILO QUE QUEREMOS (no copies literal, captura el tono):
+EXAMPLES OF THE STYLE WE WANT (don't copy literally, capture the tone):
 ${examplesBlock}
 
 ${SELF_CHECK_EMAIL(110)}
 
-Genera una versión diferente del email. Responde SOLO con JSON válido (sin markdown, sin backticks):
+Generate a different version of the email. Respond ONLY with valid JSON (no markdown, no backticks):
 {
-  "subject": "nuevo asunto",
-  "bodyHtml": "nuevo HTML",
-  "bodyText": "nueva versión texto plano"
+  "subject": "new subject",
+  "bodyHtml": "new HTML",
+  "bodyText": "new plain text version"
 }`;
 
   return withRetry(

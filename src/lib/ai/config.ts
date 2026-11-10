@@ -242,21 +242,21 @@ export function formatAgencyContextBlock(ctx: AgencyContext, opts: AgencyContext
     // interview Q&A for a shown project is attached under that project.
     const shown = rankProjectsByRelevance(ctx.projects, opts.relevanceHint, opts.maxProjects ?? 4);
     if (shown.length) {
-      lines.push("Proyectos del portafolio (reales — cita el que MEJOR encaje con el destinatario, sin inventar ni exagerar):");
+      lines.push("Portfolio projects (real — cite the one that best fits the recipient, without inventing or exaggerating):");
       for (const p of shown) {
         const k = ctx.knowledge.filter((x) => x.projectId === p.id).map((x) => ({ question: x.question, answer: x.answer }));
         lines.push(formatProjectEntry(p, k));
       }
     } else if (ctx.caseStudies.length) {
       // Fallback to legacy case studies only when there are no structured projects.
-      lines.push("Casos de éxito (úsalos solo si el ángulo encaja, NO los inventes ni los exageres):");
+      lines.push("Case studies (use them only if the angle fits, DO NOT invent or exaggerate them):");
       lines.push(ctx.caseStudies.map((c) => `- ${c.client}: ${c.result}${c.snippet ? ` — "${c.snippet}"` : ""}`).join("\n"));
     }
 
     // Agency-wide answered Q&A (not tied to a specific project).
     const generalKnowledge = ctx.knowledge.filter((k) => k.projectId == null);
     if (generalKnowledge.length) {
-      lines.push("Conocimiento adicional (datos reales que dio el usuario, úsalos con naturalidad):");
+      lines.push("Additional knowledge (real data the user provided, use it naturally):");
       lines.push(generalKnowledge.map((k) => `- ${k.question} → ${k.answer}`).join("\n"));
     }
   }
@@ -291,13 +291,13 @@ export function getLocaleLabel(country: string): string {
 }
 
 export function getLocaleWritingRules(country: string): string {
-  const formatting = `- NUNCA uses em dash (—) ni guion largo. Usa comas, puntos o guiones cortos (-) para separar ideas.
-- NUNCA uses signo de exclamación de apertura (¡). Solo usa el de cierre (!) cuando sea estrictamente necesario.
-- NUNCA uses signo de interrogación de apertura (¿) en mensajes de WhatsApp. En WhatsApp nadie lo usa, queda robótico. Solo usa el de cierre (?). En emails sí puedes usarlo si la región lo requiere.
-- Preséntate SIEMPRE como una persona real: "Soy [nombre], de [empresa]". NUNCA digas "Soy [empresa]" ni te presentes como si fueras la empresa misma.
-- Escribe de forma natural y humana. Evita construcciones rígidas o que suenen a copy publicitario.
-- SIEMPRE conecta cualquier problema detectado con un IMPACTO DE NEGOCIO concreto: pérdida de clientes, menos ventas, peor visibilidad, etc. NUNCA listes problemas técnicos sin explicar qué pierde el negocio por eso.
-- NUNCA afirmes que el sitio web está caído, roto, incompleto, "a medias", sin terminar, en construcción, feo o que "se ve cortado": no lo has visto renderizado, solo tienes señales técnicas automáticas. Menciona únicamente hechos verificables (SEO, falta de meta descripción, sin versión móvil, pocas reseñas, ausencia de sitio web, etc.). Si no hay un problema claro y verificable, enfoca el mensaje en oportunidades de mejora, nunca en defectos inventados.`;
+  const formatting = `- NEVER use em dash (—) or long dash. Use commas, periods or short dashes (-) to separate ideas.
+- NEVER use an opening exclamation sign. Only use the closing one when strictly necessary.
+- NEVER use an opening question sign in WhatsApp messages. On WhatsApp nobody uses it, it sounds robotic. Only use the closing one (?) there. In emails you can use it if the region requires it.
+- ALWAYS introduce yourself as a real person: "I'm [name], from [company]". NEVER say "I'm [company]" nor present yourself as if you were the company itself.
+- Write in a natural and human way. Avoid rigid constructions or that sound like advertising copy.
+- ALWAYS connect any detected problem to a concrete BUSINESS IMPACT: loss of clients, fewer sales, worse visibility, etc. NEVER list technical problems without explaining what the business loses because of it.
+- NEVER claim that the website is down, broken, incomplete, "half done", unfinished, under construction, ugly or that it "looks cut off": you have not seen it rendered, you only have technical signals. Mention only verifiable facts (SEO, missing meta description, no mobile version, few reviews, absence of website, etc.). If there is no clear, verifiable problem, focus the message on improvement opportunities, never on invented defects.`;
 
   const regional: Record<string, string> = {
     ES: `- Región: España. Usa "tú" y "vosotros" de forma natural.

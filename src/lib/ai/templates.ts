@@ -46,9 +46,9 @@ export async function generateEmailTemplate(
   const servicesDesc = ctx.services.map((s) => `- ${s.label}: ${s.description}`).join("\n");
 
   const purposeMap = {
-    initial: "Primer contacto, email inicial de prospección en frío",
-    follow_up: "Follow-up, segundo o tercer contacto, ángulo distinto, más breve",
-    breakup: "Breakup, último mensaje de la secuencia, despedida cordial",
+    initial: "First contact, cold outreach email initial",
+    follow_up: "Follow-up, second or third contact, different angle, shorter",
+    breakup: "Breakup, last message of the sequence, cordial goodbye",
   };
 
   const wordLimits = {
@@ -58,69 +58,68 @@ export async function generateEmailTemplate(
   };
 
   const wordLabels = {
-    initial: "75-110 palabras",
-    follow_up: "50-75 palabras",
-    breakup: "40-60 palabras",
+    initial: "75-110 words",
+    follow_up: "50-75 words",
+    breakup: "40-60 words",
   };
 
-  const prompt = `${PERSONA_BLOCK("[el remitente]", ctx.name)}
+  const prompt = `${PERSONA_BLOCK("[the sender]", ctx.name)}
 
-Tu trabajo aquí: GENERAR UNA PLANTILLA REUTILIZABLE de email para la industria "${industry}". La plantilla debe usar variables {{placeholder}} y luego se rellenará por cada lead concreto.
+Your job here: GENERATE A REUSABLE email TEMPLATE for the "${industry}" industry. The template must use {{placeholder}} variables and later be filled in for each concrete lead.
 
-PROPÓSITO: ${purposeMap[purpose]}
-TONO: ${tone}
-IDIOMA: ${localeLabel}
-${customInstructions ? `INSTRUCCIONES ADICIONALES: ${customInstructions}` : ""}
+PURPOSE: ${purposeMap[purpose]}
+LANGUAGE: ${localeLabel}
+${customInstructions ? `ADDITIONAL INSTRUCTIONS: ${customInstructions}` : ""}
 
-SERVICIOS DE LA AGENCIA:
+AGENCY SERVICES:
 ${servicesDesc}
 
-PRINCIPIO FUNDAMENTAL — ENFOQUE EN BENEFICIO:
-Al destinatario NO le importan los problemas técnicos. Le importa MÁS CLIENTES y MÁS VENTAS. Cada problema debe traducirse a impacto de negocio:
-- "Sin SSL" → "Los visitantes ven 'no seguro' y se van a la competencia"
-- "No responsive" → "El 70% busca desde el móvil y no puede navegar bien la web"
-- "SEO bajo" → "Cuando alguien busca {{category}} en {{city}}, aparece la competencia y ellos no"
-- "Sin web" → "Los clientes que buscan en Google no los encuentran"
+CORE PRINCIPLE — BENEFIT-FOCUSED APPROACH:
+The recipient doesn't care about technical problems. They care about MORE CLIENTS and MORE SALES. Every problem must be translated into business impact:
+- "No SSL" → "Visitors see 'not secure' and go to the competition"
+- "Not responsive" → "The 70% search from mobile and can't navigate the web well"
+- "Low SEO" → "When someone searches {{category}} in {{city}}, the competition shows up and they don't"
+- "No web" → "The clients who search on Google don't find them"
 
-REGLAS DE LA PLANTILLA:
-1. LONGITUD: ${wordLabels[purpose]} en el cuerpo. Es un techo, no un objetivo.
-2. FORMATO: texto plano con HTML mínimo (<p>, <br>, <b>). NADA de imágenes, colores ni headers HTML.
-3. ASUNTO: 4-7 palabras, en minúsculas, que despierte curiosidad sobre el BENEFICIO. Ejemplo: "más clientes para {{business_name}}". NO: "problemas con tu web".
-4. CTA ÚNICO: pregunta suave orientada al beneficio. NUNCA "Reserva una demo" ni "Agenda una llamada".
-5. ESTRUCTURA (4 bloques cortos):
-   - APERTURA específica: 1-2 frases con observación concreta usando variables.
-   - PUENTE AL PROBLEMA: 1-2 frases conectando con clientes/ventas que pierden o pueden capturar.
-   - VALOR: 1 frase sobre cómo ayudas a negocios parecidos. Sin prometer cifras exactas.
-   - CTA: 1 frase, pregunta abierta sobre el beneficio.
-6. FIRMA: solo "{{sender_name}}, de ${ctx.name}". NUNCA "Soy ${ctx.name}". NO añadas pie legal ni baja (lo inyecta el sistema).
-7. PARA FOLLOW-UP: cambia de ángulo respecto al inicial. Si el inicial habla de web, el follow-up habla de SEO o IA. Más breve.
-8. PARA BREAKUP: despedida cordial, deja la puerta abierta, sin culpa ni presión.
-9. COMPLIANCE LEGAL: el email debe identificarse como comunicación comercial. Remitente claro.
+TEMPLATE RULES:
+1. LENGTH: ${wordLabels[purpose]} in the body. It's a ceiling, not a goal.
+2. FORMAT: plain text with minimal HTML (<p>, <br>, <b>). NOTHING of images, colors or HTML headers.
+3. SUBJECT: 4-7 words, lowercase, that sparks curiosity about the BENEFIT. Example: "more clients for {{business_name}}". NOT: "problems with your web".
+4. SINGLE CTA: soft question oriented to the benefit. NEVER "Book a demo" or "Schedule a call".
+5. STRUCTURE (4 short blocks):
+   - SPECIFIC OPENING: 1-2 sentences with a concrete observation using variables.
+   - PROBLEM BRIDGE: 1-2 sentences connecting with clients/sales that lose or can capture.
+   - VALUE: 1 sentence about how you help similar businesses. Without promising exact figures.
+   - CTA: 1 sentence, open question about the benefit.
+6. SIGNATURE: only "{{sender_name}}, de ${ctx.name}". NEVER "I am ${ctx.name}". Do not add legal footer or unsubscribe text (the system injects it).
+7. FOR FOLLOW-UP: change angle relative to the initial. If the initial talks about web, the follow-up talks about SEO or AI. Shorter.
+8. FOR BREAKUP: cordial goodbye, leave the door open, no guilt or pressure.
+9. LEGAL COMPLIANCE: the email must identify itself as a commercial communication. Clear sender.
 
 ${ANTI_AI_RULES}
 
-ADAPTACIÓN REGIONAL:
-La plantilla usará la variable {{city}} para personalización. Adapta el idioma al locale: ${localeLabel}. Escribe natural para ese mercado.
+REGIONAL ADAPTATION:
+The template will use the {{city}} variable for personalization. Adapt to the locale language: ${localeLabel}. Write naturally for that market.
 ${writingRules}
 
-VARIABLES DISPONIBLES en la plantilla:
-- {{business_name}}: nombre del negocio
-- {{category}}: categoría/industria
-- {{city}}: ciudad
-- {{website}}: web del negocio
-- {{issue}}: issue específico detectado
-- {{sender_name}}: nombre del remitente
-- {{service}}: servicio recomendado
+AVAILABLE VARIABLES in the template:
+- {{business_name}}: business name
+- {{category}}: category/industry
+- {{city}}: city
+- {{website}}: business website
+- {{issue}}: specific issue detected
+- {{sender_name}}: sender name
+- {{service}}: recommended service
 
 ${SELF_CHECK_EMAIL(wordLimits[purpose])}
 
-Responde SOLO con JSON válido (sin markdown, sin backticks):
+Respond ONLY with valid JSON (no markdown, no backticks):
 {
-  "name": "nombre breve y descriptivo de la plantilla",
-  "subject": "asunto del email con {{variables}} si aplica",
-  "bodyHtml": "cuerpo del email en HTML mínimo (<p>, <b>, <br>)",
-  "bodyText": "versión texto plano del email",
-  "variables": ["lista", "de", "variables", "usadas"]
+  "name": "short descriptive template name",
+  "subject": "email subject with {{variables}} if applicable",
+  "bodyHtml": "email body in minimal HTML (<p>, <b>, <br>)",
+  "bodyText": "plain text version of the email",
+  "variables": ["list", "of", "variables", "used"]
 }`;
 
   return withRetry(
@@ -141,64 +140,63 @@ export async function generateWhatsAppTemplate(
   const servicesDesc = ctx.services.map((s) => `- ${s.label}: ${s.description}`).join("\n");
 
   const purposeMap = {
-    initial: "Primer contacto, mensaje inicial de prospección",
-    follow_up: "Follow-up, segundo contacto, ángulo distinto, más breve",
-    breakup: "Breakup, último mensaje, despedida cordial",
+    initial: "First contact, initial outreach WhatsApp message",
+    follow_up: "Follow-up, second contact, different angle, shorter",
+    breakup: "Breakup, last message, cordial goodbye",
   };
 
-  const prompt = `${PERSONA_BLOCK("[el remitente]", ctx.name)}
+  const prompt = `${PERSONA_BLOCK("[the sender]", ctx.name)}
 
-Tu trabajo aquí: GENERAR UNA PLANTILLA REUTILIZABLE de WhatsApp para la industria "${industry}". La plantilla debe usar variables {{placeholder}} y luego se rellenará por cada lead concreto.
+Your job here: GENERATE A REUSABLE WhatsApp TEMPLATE for the "${industry}" industry. The template must use {{placeholder}} variables and later be filled in for each concrete lead.
 
-PROPÓSITO: ${purposeMap[purpose]}
-TONO: ${tone}
-IDIOMA: ${localeLabel}
-${customInstructions ? `INSTRUCCIONES ADICIONALES: ${customInstructions}` : ""}
+PURPOSE: ${purposeMap[purpose]}
+LANGUAGE: ${localeLabel}
+${customInstructions ? `ADDITIONAL INSTRUCTIONS: ${customInstructions}` : ""}
 
-SERVICIOS DE LA AGENCIA:
+AGENCY SERVICES:
 ${servicesDesc}
 
-PRINCIPIO FUNDAMENTAL — ENFOQUE EN BENEFICIO:
-El destinatario debe sentir que GANA algo respondiendo. No le auditas ni señalas defectos: le muestras cómo tener MÁS CLIENTES o MÁS VENTAS. Cada problema técnico → impacto de negocio:
-- "Sin web" → "los clientes que buscan en Google no los encuentran, se van a la competencia"
-- "Web lenta/mala" → "la gente entra, no carga bien y se va"
-- "Sin redes" → "la competencia está captando ahí a tus clientes potenciales"
+CORE PRINCIPLE — BENEFIT-FOCUSED APPROACH:
+The recipient should feel they gain something by responding. You're not auditing them or pointing out flaws: you're showing how they can have MORE CLIENTS or MORE SALES. Every technical problem → business impact:
+- "No web" → "the clients who search on Google don't find them, they go to the competition"
+- "Slow/bad web" → "people land, don't load well and leave"
+- "No social" → "the competition is capturing your potential customers there"
 
-REGLAS DE LA PLANTILLA WHATSAPP:
-1. MÁXIMO 300 caracteres. Una sola burbuja. WhatsApp es conversacional, no formal.
-2. Saludo breve y natural ("Hola {{contact_name}},") + identificación rápida ("soy {{sender_name}} de ${ctx.name}").
-3. Una observación concreta con variables ({{business_name}}, {{city}}, {{issue}}) traducida a impacto de negocio.
-4. Cierre con pregunta abierta tipo "te interesa?", "te animas?", "tiene sentido?". NUNCA pidas reunión/calendario directo.
-5. CERO links, URLs o dominios. Disparan filtros de spam y bloqueo.
-6. CERO emojis o MÁXIMO 1 si el tono lo permite. Mejor 0.
-7. NO uses jerga técnica sin explicar el impacto.
-8. NUNCA "Soy ${ctx.name}" — eres "{{sender_name}}, de ${ctx.name}".
-9. PARA FOLLOW-UP: referencia el mensaje anterior. Más breve. Cambia de ángulo.
-10. PARA BREAKUP: cordial, sin presión, deja puerta abierta.
-11. ANTI-BLOCK: mensajes repetitivos o demasiado comerciales generan reportes y bloqueo del número. Naturalidad ante todo.
+WHATSAPP TEMPLATE RULES:
+1. MAX 300 characters. One bubble. WhatsApp is conversational, not formal.
+2. Brief natural greeting ("Hi {{contact_name}},") + quick identification ("I'm {{sender_name}} from ${ctx.name}").
+3. One concrete observation using variables ({{business_name}}, {{city}}, {{issue}}) translated to business impact.
+4. Close with an open question like "interested?", "you in?", "does it make sense?". NEVER ask for a meeting/calendar directly.
+5. ZERO links, URLs or domains. They trigger spam filters and blocking.
+6. ZERO emojis or at most 1 if the tone allows. Better 0.
+7. Do not use technical jargon without explaining the impact.
+8. NEVER "I'm ${ctx.name}" — you are "{{sender_name}}, de ${ctx.name}".
+9. FOR FOLLOW-UP: reference the previous message. Shorter. Change the angle.
+10. FOR BREAKUP: cordial, no pressure, leave the door open.
+11. ANTI-BLOCK: repetitive or too-commercial messages generate reports and number blocking. Naturalness above all.
 
 ${ANTI_AI_RULES}
 
-ADAPTACIÓN REGIONAL:
-La plantilla usará la variable {{city}} para personalización. Adapta el idioma al locale: ${localeLabel}. Escribe natural para ese mercado.
+REGIONAL ADAPTATION:
+The template will use the {{city}} variable for personalization. Adapt to the locale language: ${localeLabel}. Write naturally for that market.
 ${writingRules}
 
-VARIABLES DISPONIBLES:
-- {{business_name}}: nombre del negocio
-- {{category}}: categoría/industria
-- {{city}}: ciudad
-- {{contact_name}}: nombre del contacto
-- {{issue}}: issue detectado
-- {{sender_name}}: nombre del remitente
-- {{service}}: servicio recomendado
+AVAILABLE VARIABLES:
+- {{business_name}}: business name
+- {{category}}: category/industry
+- {{city}}: city
+- {{contact_name}}: contact name
+- {{issue}}: detected issue
+- {{sender_name}}: sender name
+- {{service}}: recommended service
 
 ${SELF_CHECK_WHATSAPP}
 
-Responde SOLO con JSON válido (sin markdown, sin backticks):
+Respond ONLY with valid JSON (no markdown, no backticks):
 {
-  "name": "nombre breve y descriptivo de la plantilla",
-  "message": "el mensaje de WhatsApp con {{variables}}",
-  "variables": ["lista", "de", "variables", "usadas"]
+  "name": "short descriptive template name",
+  "message": "the WhatsApp message with {{variables}}",
+  "variables": ["list", "of", "variables", "used"]
 }`;
 
   return withRetry(

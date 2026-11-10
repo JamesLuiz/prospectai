@@ -42,67 +42,67 @@ export async function generateWhatsApp(
   const purpose: CopyPurpose = !sequenceStep || sequenceStep === 1 ? "initial" : "follow_up";
 
   const analysisContext = analysis
-    ? `\nANÁLISIS DE PRESENCIA DIGITAL:
+    ? `\nDIGITAL PRESENCE ANALYSIS:
 - Score web: ${analysis.qualityScore}/100
 - Score SEO: ${analysis.seoScore ?? "N/A"}/100
 - Issues: ${sanitizeIssues(analysis.issues).join(", ")}
-- Oportunidades SEO: ${sanitizeIssues(analysis.seoIssues).join(", ")}
-- Oportunidades IA: ${(analysis.aiAgentOpportunities || []).join(", ")}
-- Servicios recomendados: ${(analysis.recommendedServices || []).map((k) => SERVICE_DEFINITIONS[k]?.label || k).join(", ")}
-- Resumen: ${analysis.summary}`
-    : "\nLa web no ha sido analizada o no tienen web.";
+- SEO opportunities: ${sanitizeIssues(analysis.seoIssues).join(", ")}
+- AI opportunities: ${(analysis.aiAgentOpportunities || []).join(", ")}
+- Recommended services: ${(analysis.recommendedServices || []).map((k) => SERVICE_DEFINITIONS[k]?.label || k).join(", ")}
+- Summary: ${analysis.summary}`
+    : "\nThe website has not been analyzed or they have none.";
 
   const stepContext = sequenceStep && sequenceStep > 1
-    ? `\nESTE ES FOLLOW-UP #${sequenceStep - 1}. Ya les contactaste antes. Sé más breve y directo. Cambia el ángulo. Puedes hacer referencia a que ya escribiste ("te escribí hace unos días…").`
+    ? `\nTHIS IS FOLLOW-UP #${sequenceStep - 1}. You already contacted them before. Be shorter and more direct. Change the angle. You can reference that you wrote before ("I wrote to you a few days ago…").`
     : "";
 
-  const extraInstructions = customInstructions ? `\nINSTRUCCIONES ADICIONALES DEL USUARIO: ${customInstructions}` : "";
+  const extraInstructions = customInstructions ? `\nADDITIONAL INSTRUCTIONS FROM THE USER: ${customInstructions}` : "";
 
   const examplesBlock = formatWhatsAppExamples(purpose, 3);
 
   const prompt = `${PERSONA_BLOCK(fromName, ctx.name)}
 
-CONTEXTO DE LA AGENCIA QUE ESCRIBE (identidad y servicios; NO inventes datos que no estén aquí):
+OBSERVATION FOR THE AGENCY THAT WRITES (identity and services; DO NOT invent data that is not here):
 ${formatAgencyContextBlock(ctx, { identityOnly: true })}
 
-DATOS DEL NEGOCIO AL QUE ESCRIBES:
-- Nombre: ${businessName}
-- Categoría: ${businessCategory || "Sin especificar"}
-- Ciudad: ${city || "Sin especificar"}
-- Web actual: ${websiteUrl || "No tiene"}
+BUSINESS DATA YOU'RE WRITING TO:
+- Name: ${businessName}
+- Category: ${businessCategory || "Not specified"}
+- City: ${city || "Not specified"}
+- Current web: ${websiteUrl || "None"}
 ${analysisContext}
 
-TONO PEDIDO: ${tone}
+REQUESTED TONE: ${tone}
 ${stepContext}
 ${extraInstructions}
 
-OBJETIVO DEL MENSAJE:
-El destinatario debe sentir que GANA algo respondiendo. NO le auditas ni le señalas defectos: le muestras cómo puede tener MÁS CLIENTES o MÁS VENTAS. Cada problema técnico que menciones debe traducirse a impacto de negocio tangible.
+GOAL OF THE MESSAGE:
+The recipient should feel they GAIN something by responding. DO NOT audit them or point out flaws: show how they can have MORE CLIENTS or MORE SALES. Every technical problem you mention must translate to tangible business impact.
 
-ESTRUCTURA DEL MENSAJE (en una sola burbuja, sin splits):
-1. SALUDO + IDENTIFICACIÓN (1 línea breve): "Hola [nombre], soy [tu nombre] de [agencia]".
-2. OBSERVACIÓN CONCRETA (1-2 líneas): algo VERDADERO y específico de su negocio (de la auditoría) conectado a clientes o ventas. NADA de cumplidos vagos o de relleno ("se nota que llevan tiempo", "tienen un gran servicio"): suenan huecos e insinceros. Si no hay algo específico, ve directo al punto útil.
-3. PROPUESTA / PERMISSION ASK (1 línea): qué les ofreces o qué les pides poder enviarles, concreto y de bajo compromiso. NO menciones proyectos ni clientes que no conocen, NI presentes tu agencia o su tamaño/productos ("somos un directorio con X doctores"): en un primer mensaje suena a presumir y es relleno.
-4. PREGUNTA ABIERTA (al final del mismo bloque): "te interesa?", "te animas?", "tiene sentido?".
+STRUCTURE OF THE MESSAGE (in a single bubble, no splits):
+1. GREETING + IDENTIFICATION (1 short line): "Hi [name], I'm [your name] from [agency]".
+2. CONCRETE OBSERVATION (1-2 lines): something TRUE and specific about their business (from the audit) tied to clients or sales. NO vague praise or filler ("it looks like they've been at it a while", "they have a great service"): it sounds hollow and insincere. If there is nothing specific, go straight to the useful point.
+3. PROPOSAL / PERMISSION ASK (1 line): what you offer or what you ask permission to send, concrete and low-commitment. DO NOT mention projects or clients they don't know, NOR present your agency or its size/products ("we're a directory with X doctors"): in a first message it sounds like bragging and is filler.
+4. OPEN QUESTION (at the end of the same block): "interested?", "you in?", "does it make sense?".
 
-REGLAS DE WHATSAPP B2B:
-1. Idioma: ${localeLabel}
-2. Máximo 300 caracteres. WhatsApp es conversacional, no formal.
-3. Una sola burbuja, NUNCA splits en mensajes consecutivos (parece spam masivo).
-4. CERO links, URLs, dominios. Disparan filtros de spam y bloqueo de número.
-5. CERO o MÁXIMO 1 emoji. Mejor 0 en B2B salvo señalado.
-6. NO uses jerga técnica sin explicar el impacto. Nada de "SSL", "responsive", "SEO" sueltos.
-7. NUNCA digas "Soy ${ctx.name}". Eres "${fromName}, de ${ctx.name}".
-8. NUNCA pidas reunión directa, llamada o calendario en cold #1. Cierre = pregunta abierta.
-9. NUNCA uses "gratis", "sin compromiso", "auditoría gratis". Alternativas naturales: "te paso un análisis", "te enseño cómo funciona".
+WHATSAPP B2B RULES:
+1. LANGUAGE: ${localeLabel}
+2. MAX 300 characters. WhatsApp is conversational, not formal.
+3. One single bubble, NEVER splits into consecutive messages (looks like mass spam).
+4. ZERO links, URLs, domains. They trigger spam filters and blocking of the number.
+5. ZERO or MAX 1 emoji. Better 0 in B2B unless specified.
+6. DO NOT use technical jargon without explaining the impact. Nothing like "SSL", "responsive", "SEO" alone.
+7. NEVER say "I'm ${ctx.name}". You are "${fromName}, from ${ctx.name}".
+8. NEVER ask for a direct meeting, call or calendar in cold #1. Close with an open question.
+9. NEVER use "free", "no commitment", "free audit". Natural alternatives: "send you an analysis", "teach you how", "tell you in two lines".
 
 ${ANTI_AI_RULES}
 
-ADAPTACIÓN REGIONAL (CRÍTICA):
-El negocio está en ${city || "ubicación no especificada"}. Adapta al país de ESA ciudad, NO al país de la agencia. Si está en México, español mexicano (sin "vosotros", sin "tío", sin "vale"). Si en Argentina, voseo. Si en España, español de España.
+REGIONAL ADAPTATION (CRITICAL):
+The business is in ${city || "location not specified"}. Adapt to the country of THAT city, NOT the agency. If in Mexico, Mexican Spanish (no "vosotros", no "tío", no "okay"). If in Argentina, voseo. If in Spain, Spanish from Spain.
 ${writingRules}
 
-EJEMPLOS DEL ESTILO QUE QUEREMOS (referencia obligatoria de tono, no copies literal):
+EXAMPLES OF THE STYLE WE WANT (required tone reference, not literal copies):
 ${examplesBlock}
 
 ${SELF_CHECK_WHATSAPP}`;
@@ -135,41 +135,41 @@ export async function regenerateWhatsApp(
 
   const prompt = `${PERSONA_BLOCK(fromName, ctx.name)}
 
-Necesitas REGENERAR un mensaje de WhatsApp de prospección que ya tenías escrito, aplicando un nuevo tono o instrucciones.
+You need to REGENERATE a WhatsApp outreach message you already wrote, applying a new tone or instructions.
 
-CONTEXTO DE LA AGENCIA QUE ESCRIBE (identidad y servicios; NO inventes datos que no estén aquí):
+OBSERVATION FOR THE AGENCY THAT WRITES (identity and services; DO NOT invent data that is not here):
 ${formatAgencyContextBlock(ctx, { identityOnly: true })}
 
-DATOS DEL NEGOCIO:
-- Nombre: ${businessName}
-- Categoría: ${businessCategory || "Sin especificar"}
-- Ciudad: ${city || "Sin especificar"}
-- Web: ${websiteUrl || "No tiene"}
+BUSINESS DATA:
+- Name: ${businessName}
+- Category: ${businessCategory || "Not specified"}
+- City: ${city || "Not specified"}
+- Web: ${websiteUrl || "None"}
 
-MENSAJE ANTERIOR:
+PREVIOUS MESSAGE:
 ${previousMessage}
 
-NUEVO TONO: ${tone}
-INSTRUCCIONES ADICIONALES: ${instructions || "Solo cambia el tono"}
-Idioma: ${localeLabel}
+NEW TONE: ${tone}
+ADDITIONAL INSTRUCTIONS: ${instructions || "Just change the tone"}
+LANGUAGE: ${localeLabel}
 
-REGLAS:
-- Máximo 300 caracteres, conversacional, sin HTML, sin links/URLs/dominios.
-- Máximo 1 emoji (mejor 0).
-- Foco en lo que GANA el destinatario (más clientes, más ventas), NO en listar problemas técnicos.
-- Cada problema → impacto de negocio.
-- NUNCA "gratis", "sin compromiso", "auditoría gratis".
-- NUNCA jerga técnica sin explicar.
-- NUNCA pidas reunión/llamada/calendario directo. Cierre con pregunta abierta tipo "te interesa?".
-- Puedes hablar de web, SEO, IA, Google Business o redes sociales según lo más relevante.
+RULES:
+- MAX 300 characters, conversational, no HTML, no links/URLs/domains.
+- MAX 1 emoji (better 0).
+- Focus on what the recipient GAINS (more clients, more sales), NOT on listing technical problems.
+- Every problem → business impact.
+- NEVER use "free", "no commitment", "free audit".
+- NEVER use technical jargon without explaining.
+- NEVER ask for a meeting/call/calendar directly. Close with an open question like "interested?".
+- You can talk about web, SEO, AI, Google Business or social media depending on what is most relevant.
 
 ${ANTI_AI_RULES}
 
-ADAPTACIÓN REGIONAL (CRÍTICA):
-El negocio está en ${city || "ubicación no especificada"}. Adapta al país de ESA ciudad. Si está en México, español mexicano. Si en Argentina, voseo. Si en España, español de España.
+REGIONAL ADAPTATION (CRITICAL):
+The business is in ${city || "location not specified"}. Adapt to the country of THAT city. If in Mexico, Mexican Spanish. If in Argentina, voseo. If in Spain, Spanish from Spain.
 ${writingRules}
 
-EJEMPLOS DEL ESTILO QUE QUEREMOS (no copies literal, captura el tono):
+EXAMPLES OF THE STYLE WE WANT (don't copy literally, capture the tone):
 ${examplesBlock}
 
 ${SELF_CHECK_WHATSAPP}`;

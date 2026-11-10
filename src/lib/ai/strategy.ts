@@ -5,11 +5,11 @@
 export type CampaignStrategy = "web_design" | "seo_visibility";
 
 const DIRECTIVES: Record<CampaignStrategy, string> = {
-  web_design: `ENFOQUE DE ESTA CAMPAÑA — DISEÑO WEB:
-El problema central a vender es su SITIO WEB (malo, anticuado o inexistente) y cómo eso le cuesta clientes. Lidera el mensaje con eso. El servicio que ofreces es crear o renovar su web. Puedes mencionar visibilidad/SEO solo si encaja de forma natural como complemento, sin que sea el centro. NO menciones precios.`,
+  web_design: `CAMPAIGN FOCUS — WEBSITE DESIGN:
+The central problem to sell is their WEBSITE (bad, outdated or nonexistent) and how it costs them clients. Lead with that. The service you offer is creating or renewing their website. You can mention visibility/SEO only if it fits naturally as a complement, not as the center. DO NOT mention prices.`,
 
-  seo_visibility: `ENFOQUE DE ESTA CAMPAÑA — VISIBILIDAD EN GOOGLE (SEO):
-El servicio a vender es VISIBILIDAD: que aparezcan en Google cuando la gente busca su tipo de negocio en su zona. Ángulo central: hoy, cuando alguien busca "[su categoría] en [su ciudad]", aparece la competencia y ellos no, así que pierden clientes que YA los están buscando. Ofrece posicionarlos (SEO local, optimizar su ficha de Google, aparecer en el mapa y en directorios, reseñas). Es un servicio CONTINUO que les trae clientes mes a mes, no un arreglo puntual. NO propongas rediseñar su web salvo que esté rota o sea un obstáculo real. NO menciones precios.`,
+  seo_visibility: `CAMPAIGN FOCUS — GOOGLE VISIBILITY (SEO):
+The service to sell is VISIBILITY: that they appear on Google when people search for their type of business in their area. Central angle: today, when someone searches "[their category] in [their city]", the competition shows up and they don't, so they lose clients who are already looking. Offer to position them (local SEO, optimize their Google profile, appear on the map and in directories, reviews). It's a CONTINUOUS service that brings them clients month after month, not a one-off fix. DO NOT propose redesigning their website unless it is broken or a real obstacle. DO NOT mention prices.`,
 };
 
 /** Returns the campaign angle directive, or "" for unknown/unset strategies. */

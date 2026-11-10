@@ -99,7 +99,7 @@ const defaultSettings: Record<string, string> = {
   workana_last_scan_at: "",
   // headless background scans; the interactive connect always opens headful
   workana_headless: "true",
-  workana_locale: "es-AR",
+  workana_locale: "en-US",
   workana_timezone: "America/Argentina/Buenos_Aires",
   workana_scan_interval_hours: "12",
   workana_max_eval_per_scan: "15",

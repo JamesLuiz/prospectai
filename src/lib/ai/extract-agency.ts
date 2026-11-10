@@ -118,38 +118,38 @@ export async function extractAgencyFromScrape(
     .join("\n");
 
   const emailsHint = scrape.combinedEmails.length
-    ? `\nEMAILS DETECTADOS EN LA WEB (puede haber genéricos o personales):\n${scrape.combinedEmails.join(", ")}`
+    ? `\nEMAILS FOUND ON THE WEBSITE (there may be generic or personal ones):\n${scrape.combinedEmails.join(", ")}`
     : "";
 
-  const prompt = `Eres un analista que extrae datos estructurados de la web de una agencia o profesional para construir su perfil. Analiza el contenido scrapeado y devuelve SOLO datos REALES presentes en el texto. NO inventes nombres, servicios, ni casos de éxito que no estén explícitos.
+  const prompt = `You are an analyst who extracts structured data from an agency or professional website to build its profile. Analyze the scraped content and return ONLY real data present in the text. DO NOT invent names, services, or case studies that are not explicit.
 
-URL DE LA AGENCIA: ${baseUrl}
+URL OF THE AGENCY: ${baseUrl}
 
-CONTENIDO SCRAPEADO (varias páginas concatenadas):
+SCRAPED CONTENT (multiple pages concatenated):
 ${scrape.combinedContent}
 ${emailsHint}
 
-CATÁLOGO DE SERVICIOS ESTÁNDAR (mapea a estas keys SOLO si la agencia ofrece algo equivalente):
+STANDARD SERVICES CATALOG (map to these keys ONLY if the agency offers something equivalent):
 ${servicesCatalog}
 
-INSTRUCCIONES:
-1. "name": Nombre comercial de la agencia/profesional. Si no es claro, deduce del título o del dominio. Sin sufijos legales (S.L., LLC, etc.) salvo que sea parte del branding visible.
-2. "tagline": Frase de propuesta de valor (1 línea, ~10 palabras) si la web la tiene. Null si no.
-3. "description": 1-2 frases describiendo qué hace la agencia, basado en el contenido. Tono neutro.
-4. "ownerName": Nombre real del fundador/responsable si aparece en about/team. Null si no aparece (NO inventes).
-5. "ownerRole": Cargo del responsable (CEO, fundador, director, etc.) si está. Null si no.
-6. "contactEmail": Email principal de contacto. Prefiere uno de los detectados. Null si no hay.
-7. "contactPhone": Teléfono principal con código país si aparece. Null si no.
-8. "city": Ciudad principal de operación si se menciona. Null si no.
-9. "country": Código ISO-2 del país (ES, MX, AR, CO, CL, PE, EC, UY, US, UK, CA, AU, BR, PT, FR, DE, IT, NL). Deduce de TLD del dominio, dirección, o idioma + indicios. Null si no se puede deducir con confianza.
-10. "services": Array de keys del catálogo arriba que la agencia REALMENTE ofrece según el contenido. Vacío si no se puede mapear.
-11. "customServices": Array de servicios que ofrecen y NO encajan en el catálogo. Cada item: {"label": "Nombre del servicio", "description": "1 línea"}. Vacío si todo encaja.
-12. "valueProps": Array de 2-4 frases que destacan diferenciadores REALES mencionados (años de experiencia, especialización, tecnologías, etc.). Vacío si no hay nada concreto.
-13. "caseStudies": Array de casos de éxito o clientes reconocidos mencionados. Cada item: {"client": "Nombre", "result": "qué resultado se logró", "snippet": "cita opcional"}. Vacío si no se mencionan.
+INSTRUCTIONS:
+1. "name": Commercial name of the agency/professional. If not clear, infer from the title or domain. No legal suffixes (S.L., LLC, etc.) unless part of the visible branding.
+2. "tagline": Value proposition phrase (1 line, ~10 words) if the website has it. Null if not.
+3. "description": 1-2 sentences describing what the agency does, based on the content. Neutral tone.
+4. "ownerName": Real name of the founder/responsible person if it appears in about/team. Null if it does not appear (DO NOT invent).
+5. "ownerRole": Role of the responsible person (CEO, founder, director, etc.) if present. Null if not.
+6. "contactEmail": Main contact email. Prefer one of the detected ones. Null if none.
+7. "contactPhone": Main phone number with country code if it appears. Null if not.
+8. "city": Main operating city if mentioned. Null if not.
+9. "country": ISO-2 country code (ES, MX, AR, CO, CL, PE, EC, UY, US, UK, CA, AU, BR, PT, FR, DE, IT, NL). Deduce from domain TLD, address, or language + clues. Null if it cannot be deduced with confidence.
+10. "services": Array of catalog keys above that the agency ACTUALLY offers based on the content. Empty if it cannot be mapped.
+11. "customServices": Array of services they offer that do NOT fit the catalog. Each item: {"label": "Service name", "description": "1 line"}. Empty if everything fits.
+12. "valueProps": Array of 2-4 phrases highlighting REAL differentiators mentioned (years of experience, specialization, technologies, etc.). Empty if there is nothing concrete.
+13. "caseStudies": Array of case studies or recognized clients mentioned. Each item: {"client": "Name", "result": "what was achieved", "snippet": "optional quote"}. Empty if none are mentioned.
 
-Si un campo no está en el contenido, usa null (string fields) o [] (arrays). NO inventes datos.
+If a field is not in the content, use null (string fields) or [] (arrays). DO NOT invent data.
 
-Responde SOLO con JSON válido (sin markdown, sin backticks):
+Respond ONLY with valid JSON (no markdown, no backticks):
 {
   "name": "...",
   "tagline": null,

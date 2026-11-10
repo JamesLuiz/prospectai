@@ -6,13 +6,19 @@ import Papa from "papaparse";
 import * as searchService from "@/services/search.service";
 import { handleServiceError } from "@/services/api-handler";
 
-// Map scraper status ("pending","working","ok","failed") to our status
+// Map scraper status ("pending","working","ok","success","failed") to our status
 function mapStatus(scraperStatus: string): string {
   switch (scraperStatus) {
-    case "ok": return "completed";
-    case "failed": return "failed";
-    case "working": return "running";
-    default: return "pending";
+    case "ok":
+    case "success":
+    case "complete":
+      return "completed";
+    case "failed":
+      return "failed";
+    case "working":
+      return "running";
+    default:
+      return "pending";
   }
 }
 

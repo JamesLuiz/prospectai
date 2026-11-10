@@ -173,7 +173,7 @@ export function registerOrchestrationTools(server: McpServer) {
 
             if (res.ok) {
               const data = await res.json();
-              if (data.status === "complete" || data.status === "ok") {
+              if (data.status === "complete" || data.status === "ok" || data.status === "success") {
                 const results = data.results || data.data || [];
                 db.update(searchJobs).set({
                   status: "completed",

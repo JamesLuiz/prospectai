@@ -116,7 +116,7 @@ export default function SearchPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           keyword: keyword.trim(),
-          campaignId: campaignId || null,
+          campaignId: campaignId ? Number(campaignId) : undefined,
           maxDepth,
         }),
       });
@@ -219,7 +219,7 @@ export default function SearchPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           selectedIndices: Array.from(selected),
-          campaignId: campaignId || null,
+          campaignId: campaignId ? Number(campaignId) : undefined,
         }),
       });
 

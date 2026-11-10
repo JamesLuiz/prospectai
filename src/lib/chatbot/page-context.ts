@@ -46,7 +46,7 @@ export const PAGE_GUIDE: Record<string, PageGuide> = {
   },
   "/settings": {
     title: "Configuración",
-    does: "Identidad de la agencia, conexiones (email/Resend, WhatsApp, claves Gemini/Anthropic, tracking, webhook CRM), envío (límite, warm-up, ventana horaria), avanzado y sistema (tema, idioma, modos del chat).",
+    does: "Identidad de la agencia, conexiones (email/Resend, WhatsApp, claves de IA: Gemini/Anthropic/Mistral/OpenAI, tracking, webhook CRM), envío (límite, warm-up, ventana horaria), avanzado y sistema (tema, idioma, modos del chat).",
     how: "Pestañas Perfil/Conexiones/Envío/Avanzado/Sistema; botón Guardar. Las claves se prueban en línea.",
     actions: "check_configuration, update_settings (NO acepta claves API ni el QR de WhatsApp). Para conectar WhatsApp usa connect_whatsapp; para Workana, enable_workana_addon + connect_workana.",
   },

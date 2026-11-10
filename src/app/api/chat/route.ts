@@ -8,6 +8,7 @@ import {
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { createAnthropic } from "@ai-sdk/anthropic";
 import { createMistral } from "@ai-sdk/mistral";
+import { createOpenAI } from "@ai-sdk/openai";
 import { claudeCode, createAiSdkMcpServer } from "ai-sdk-provider-claude-code";
 import {
   chatbotTools,
@@ -50,7 +51,7 @@ SERVICE WARNINGS: Use check_configuration. Only warn that EMAIL or WHATSAPP is
 unconfigured when that service has required: true — i.e. at least one campaign uses
 that channel. Never nag about a channel no campaign uses.
 
-You CANNOT set secrets: API keys (Gemini/Resend/Anthropic) or SMTP/IMAP passwords —
+You CANNOT set secrets: API keys (Gemini/Resend/Anthropic/Mistral/OpenAI) or SMTP/IMAP passwords —
 for those, tell the user to open Settings → Connections. You CAN connect WhatsApp
 yourself with connect_whatsapp (the QR appears in the chat to scan) and enable then
 connect the Workana add-on with enable_workana_addon / connect_workana.`;
@@ -84,6 +85,7 @@ const CLI_DEV_TOOLS = [
 
 const ANTHROPIC_CHAT_MODEL = process.env.ANTHROPIC_MODEL || "claude-sonnet-4-6";
 const MISTRAL_CHAT_MODEL = process.env.MISTRAL_MODEL || "mistral-large-latest";
+const OPENAI_CHAT_MODEL = process.env.OPENAI_MODEL || "gpt-5-mini";
 const CLI_CHAT_MODEL = process.env.CLAUDE_CLI_CHAT_MODEL || "sonnet";
 
 // Built-in Claude Code tools the outreach agent must never touch. With
@@ -111,8 +113,8 @@ type ChatModel =
 /**
  * Resolve the chat model from the global `ai_provider` setting.
  *
- * All four providers drive the same Vercel AI SDK `useChat` UI:
- *   - `anthropic` / `gemini` / `mistral` → native AI SDK providers, tools run in-process.
+ * All providers drive the same Vercel AI SDK `useChat` UI:
+ *   - `anthropic` / `gemini` / `mistral` / `openai` → native AI SDK providers, tools run in-process.
  *   - `claude_cli`           → the `ai-sdk-provider-claude-code` bridge runs the
  *                              agent through the logged-in Claude CLI subscription
  *                              (no API key); our tools are exposed as an in-process
@@ -173,6 +175,19 @@ function resolveChatModel(provider: AiProvider, devMode: boolean): ChatModel {
     return {
       kind: "aisdk",
       model: createMistral({ apiKey: mistralKey })(MISTRAL_CHAT_MODEL),
+    };
+  }
+
+  if (provider === "openai") {
+    const openaiKey = getApiKey("openai_api_key", "OPENAI_API_KEY");
+    if (!openaiKey) {
+      throw new Error(
+        "El chatbot requiere una OpenAI API Key. Configúrala en Configuración > Conexiones."
+      );
+    }
+    return {
+      kind: "aisdk",
+      model: createOpenAI({ apiKey: openaiKey })(OPENAI_CHAT_MODEL),
     };
   }
 
@@ -274,6 +289,9 @@ export async function POST(req: Request) {
 
       if (provider === "mistral" && rejectedKey) {
         return "Mistral rechazó la API key (401 Invalid API Key). Vuelve a guardar una key válida en Configuración > Conexiones. Ojo: una key guardada en la base de datos tiene prioridad sobre MISTRAL_API_KEY, así que si cambiaste solo la variable de entorno, sobrescríbela también en Settings.";
+      }
+      if (provider === "openai" && rejectedKey) {
+        return "OpenAI rechazó la API key (401). Vuelve a guardar una key válida en Configuración > Conexiones. Ojo: una key guardada en la base de datos tiene prioridad sobre OPENAI_API_KEY, así que si cambiaste solo la variable de entorno, sobrescríbela también en Settings.";
       }
       if (provider === "anthropic" && rejectedKey) {
         return "Anthropic rechazó la API key (401). Vuelve a guardarla en Configuración > Conexiones.";

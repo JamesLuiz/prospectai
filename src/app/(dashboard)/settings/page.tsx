@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Card, Button, Input, Select, Toggle, Spinner, Badge, ProgressBar, Segment } from "@/components/ui";
 import { useToast } from "@/components/Toast";
 import { Zap, TestTube, CheckCircle, XCircle, RefreshCw, MessageCircle, Wifi, WifiOff, Globe, Shield, Clock, Link2, Webhook, Settings2, Play, Square, Wand2, KeyRound, Cpu, Mail, Palette } from "lucide-react";
-import { AnthropicIcon, GeminiIcon, WhatsAppIcon, ResendIcon } from "@/components/icons/Brands";
+import { AnthropicIcon, GeminiIcon, OpenAIIcon, WhatsAppIcon, ResendIcon } from "@/components/icons/Brands";
 import { useT } from "@/i18n/LocaleProvider";
 import { useTheme } from "@/components/ThemeProvider";
 import { getLang } from "@/i18n/index";
@@ -374,6 +374,7 @@ export default function SettingsPage() {
                 <option value="gemini">{t("settings.aiEngine.gemini")}</option>
                 <option value="anthropic">{t("settings.aiEngine.anthropic")}</option>
                 <option value="mistral">{t("settings.aiEngine.mistral")}</option>
+                <option value="openai">{t("settings.aiEngine.openai")}</option>
               </Select>
             </div>
             <p className="text-[11px] text-text-muted leading-relaxed">
@@ -383,6 +384,8 @@ export default function SettingsPage() {
                 ? t("settings.aiEngine.anthropicHelp")
                 : settings.ai_provider === "mistral"
                 ? t("settings.aiEngine.mistralHelp")
+                : settings.ai_provider === "openai"
+                ? t("settings.aiEngine.openaiHelp")
                 : t("settings.aiEngine.claudeCliHelp")}
             </p>
           </div>
@@ -398,6 +401,7 @@ export default function SettingsPage() {
               { key: "gemini_api_key", label: t("settings.apiKeys.gemini"), hint: t("settings.apiKeys.geminiHint"), Icon: GeminiIcon },
               { key: "anthropic_api_key", label: t("settings.apiKeys.anthropic"), hint: t("settings.apiKeys.anthropicHint"), Icon: AnthropicIcon },
               { key: "mistral_api_key", label: t("settings.apiKeys.mistral"), hint: t("settings.apiKeys.mistralHint"), Icon: Cpu },
+              { key: "openai_api_key", label: t("settings.apiKeys.openai"), hint: t("settings.apiKeys.openaiHint"), Icon: OpenAIIcon },
               { key: "resend_api_key", label: t("settings.apiKeys.resend"), hint: t("settings.apiKeys.resendHint"), Icon: ResendIcon },
             ] as const).map((f) => (
               <div key={f.key} className="rounded-xl border border-border bg-[var(--glass-bg)] backdrop-blur-md p-4">

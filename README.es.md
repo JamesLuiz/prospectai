@@ -95,6 +95,8 @@ RESEND_API_KEY=tu_api_key_de_resend
 ANTHROPIC_API_KEY=           # ai_provider=anthropic
 MISTRAL_API_KEY=             # ai_provider=mistral
 # MISTRAL_MODEL=mistral-large-latest
+OPENAI_API_KEY=              # ai_provider=openai
+# OPENAI_MODEL=gpt-5-mini
 
 # Autenticacion — elige un usuario y contrasena
 AUTH_USERNAME=admin
@@ -193,7 +195,7 @@ los mensajes entrantes de clientes en una bandeja accionable.
 
 - **Desactivado por defecto.** Actívalo en **`/workana`** dentro del dashboard.
 - **Navegador:** requiere Chromium para Playwright — ejecuta `npx playwright install chromium` una vez.
-- **IA:** reutiliza tu `ai_provider` (Claude CLI / Anthropic / Gemini). La redacción usa Opus 4.8
+- **IA:** reutiliza tu `ai_provider` (Claude CLI / Anthropic / Gemini / Mistral / OpenAI). La redacción usa Opus 4.8
   por defecto (configurable con `WORKANA_DRAFT_MODEL`).
 - **Login único:** pulsa *Conectar* en `/workana`; se abre un navegador real para iniciar sesión
   en Workana una vez. La sesión se guarda localmente (gitignored).

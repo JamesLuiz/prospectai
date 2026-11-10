@@ -39,3 +39,7 @@ export const geminiRateLimiter = new TokenBucketRateLimiter(10, 2);
 // Mistral's free tier is stricter (≈1 req/sec). 5 burst, 1/sec sustained is a
 // safe default that still keeps copy generation moving.
 export const mistralRateLimiter = new TokenBucketRateLimiter(5, 1);
+
+// OpenAI's default tier is more generous; 10 burst, 2/sec sustained keeps the
+// chat responsive without hammering the API.
+export const openaiRateLimiter = new TokenBucketRateLimiter(10, 2);

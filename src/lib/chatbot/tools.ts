@@ -39,7 +39,7 @@ function requireDevMode(): void {
 // Single source of truth per tool: description + raw Zod object schema + execute.
 // Two shapes are derived from these defs (see exports at the bottom of the file):
 //   - `chatbotTools`    → AI SDK tools (zodSchema wrapper for Zod v4 compat), executed
-//                         in-process by streamText for the anthropic/gemini providers.
+//                         in-process by streamText for the API providers.
 //   - `chatbotCliTools` → raw-Zod tools for the claude_cli bridge. createAiSdkMcpServer
 //                         requires a Zod object schema and rejects zodSchema()/jsonSchema().
 interface ToolDef<T extends z.ZodObject<any>> {
@@ -750,7 +750,7 @@ const toolDefs = {
 
 // ─── Derived tool maps ───────────────────────────────────────────────
 
-// AI SDK tools for the anthropic / gemini providers (executed in-process by streamText).
+// AI SDK tools for the native API providers (executed in-process by streamText).
 export const chatbotTools = Object.fromEntries(
   Object.entries(toolDefs).map(([name, d]) => [
     name,

@@ -56,6 +56,7 @@ export async function register() {
     // it still says Unauthorized".
     const aiKeys: Record<string, [string, string]> = {
       mistral: ["mistral_api_key", "MISTRAL_API_KEY"],
+      openai: ["openai_api_key", "OPENAI_API_KEY"],
       anthropic: ["anthropic_api_key", "ANTHROPIC_API_KEY"],
       gemini: ["gemini_api_key", "GEMINI_API_KEY"],
     };

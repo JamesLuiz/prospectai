@@ -93,7 +93,7 @@ export function registerSystemTools(server: McpServer) {
 
   server.tool(
     "check_integrations",
-    "Test live connections to Resend and Google Maps scraper. Reports WhatsApp status (managed by web app). Gemini is tested with a minimal call.",
+    "Test live connections to the configured AI providers, Resend and Google Maps scraper. Reports WhatsApp status (managed by web app). Each configured provider is tested with a minimal call.",
     {},
     async () => {
       const results: Record<string, string> = {};
@@ -133,6 +133,29 @@ export function registerSystemTools(server: McpServer) {
         }
       } else {
         results.mistral = "Not configured (MISTRAL_API_KEY missing)";
+      }
+
+      // OpenAI (only when a key is configured)
+      const openaiKey = getApiKey("openai_api_key", "OPENAI_API_KEY");
+      if (openaiKey) {
+        try {
+          const [{ createOpenAI }, { generateText }] = await Promise.all([
+            import("@ai-sdk/openai"),
+            import("ai"),
+          ]);
+          await generateText({
+            model: createOpenAI({ apiKey: openaiKey })(
+              process.env.OPENAI_MODEL || "gpt-4.1-mini"
+            ),
+            prompt: "Reply with OK",
+            maxOutputTokens: 16,
+          });
+          results.openai = "Connected";
+        } catch (e) {
+          results.openai = `Error: ${e instanceof Error ? e.message : "unknown"}`;
+        }
+      } else {
+        results.openai = "Not configured (OPENAI_API_KEY missing)";
       }
 
       // Resend

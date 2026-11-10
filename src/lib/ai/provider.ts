@@ -1,10 +1,15 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { createMistral } from "@ai-sdk/mistral";
+import { createOpenAI } from "@ai-sdk/openai";
 import { generateText } from "ai";
 import { getSetting, getApiKey } from "@/db";
 import { getGenAI, cleanJsonResponse, safeParseJSON } from "./config";
 import { runClaudeCli } from "./claude-cli";
-import { geminiRateLimiter, mistralRateLimiter } from "@/lib/ai/rate-limiter";
+import {
+  geminiRateLimiter,
+  mistralRateLimiter,
+  openaiRateLimiter,
+} from "@/lib/ai/rate-limiter";
 
 /**
  * AI engine selected in Settings → Connections. A single provider governs all
@@ -14,19 +19,23 @@ import { geminiRateLimiter, mistralRateLimiter } from "@/lib/ai/rate-limiter";
  * - `gemini`:     Google Gemini API key.
  * - `anthropic`:  Anthropic API key (Messages API).
  * - `mistral`:    Mistral AI API key (via the Vercel AI SDK provider).
+ * - `openai`:     OpenAI API key (via the Vercel AI SDK provider).
  */
-export type AiProvider = "claude_cli" | "gemini" | "anthropic" | "mistral";
+export type AiProvider = "claude_cli" | "gemini" | "anthropic" | "mistral" | "openai";
 
 export function getAiProvider(): AiProvider {
   const v = getSetting("ai_provider");
-  return v === "gemini" || v === "anthropic" || v === "mistral" ? v : "claude_cli";
+  return v === "gemini" || v === "anthropic" || v === "mistral" || v === "openai"
+    ? v
+    : "claude_cli";
 }
 
 const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL || "claude-sonnet-4-6";
 const GEMINI_MODEL = "gemini-2.5-flash";
 const MISTRAL_MODEL = process.env.MISTRAL_MODEL || "mistral-large-latest";
+const OPENAI_MODEL = process.env.OPENAI_MODEL || "gpt-5-mini";
 
-// System prompt for the API providers (Anthropic/Gemini/Mistral). For `claude_cli` the
+// System prompt for the API providers (Anthropic/Gemini/Mistral/OpenAI). For `claude_cli` the
 // CLI's own default copywriting-neutral system prompt is used unless overridden.
 const STRUCTURED_SYSTEM_PROMPT =
   "Eres un asistente experto en copywriting B2B. Sigue las instrucciones del usuario al pie de la letra " +
@@ -60,6 +69,20 @@ function getMistral(): ReturnType<typeof createMistral> {
   return _mistral;
 }
 
+// Lazily build and cache the OpenAI provider, re-created when the resolved key
+// changes so keys edited in the app take effect without a restart.
+let _openai: ReturnType<typeof createOpenAI> | null = null;
+let _openaiKey = "";
+function getOpenAI(): ReturnType<typeof createOpenAI> {
+  const key = getApiKey("openai_api_key", "OPENAI_API_KEY");
+  if (!key) throw new Error("OpenAI API key no configurada (ai_provider=openai)");
+  if (!_openai || key !== _openaiKey) {
+    _openai = createOpenAI({ apiKey: key });
+    _openaiKey = key;
+  }
+  return _openai;
+}
+
 export interface GenerateStructuredOptions {
   /** User prompt. */
   prompt: string;
@@ -73,8 +96,8 @@ export interface GenerateStructuredOptions {
   maxTokens?: number;
   /**
    * Override the model for this single call. For `claude_cli` it's the `--model`
-   * value (e.g. "claude-opus-4-8"); for `anthropic`/`gemini`/`mistral` it
-   * overrides their default. When unset, each provider uses its configured default.
+   * value (e.g. "claude-opus-4-8"); for `anthropic`/`gemini`/`mistral`/`openai`
+   * it overrides their default. When unset, each provider uses its configured default.
    */
   model?: string;
 }
@@ -113,6 +136,17 @@ export async function generateStructured<T>(opts: GenerateStructuredOptions): Pr
     await mistralRateLimiter.acquire();
     const { text } = await generateText({
       model: getMistral()(opts.model ?? MISTRAL_MODEL),
+      system: opts.systemPrompt ?? STRUCTURED_SYSTEM_PROMPT,
+      prompt,
+      maxOutputTokens: maxTokens,
+    });
+    return safeParseJSON<T>(cleanJsonResponse(text.trim()), label);
+  }
+
+  if (provider === "openai") {
+    await openaiRateLimiter.acquire();
+    const { text } = await generateText({
+      model: getOpenAI()(opts.model ?? OPENAI_MODEL),
       system: opts.systemPrompt ?? STRUCTURED_SYSTEM_PROMPT,
       prompt,
       maxOutputTokens: maxTokens,

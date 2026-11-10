@@ -27,6 +27,13 @@ export function checkMistralConfig(): ConfigCheck {
   return { ok: missing.length === 0, missing, warnings };
 }
 
+export function checkOpenAIConfig(): ConfigCheck {
+  const missing: string[] = [];
+  const warnings: string[] = [];
+  if (!getApiKey("openai_api_key", "OPENAI_API_KEY")) missing.push("OPENAI_API_KEY env var");
+  return { ok: missing.length === 0, missing, warnings };
+}
+
 /**
  * AI readiness for the provider actually selected in Settings. `claude_cli` needs
  * no API key (it uses the logged-in CLI), so it never blocks a campaign.
@@ -35,6 +42,7 @@ export function checkAiConfig(): ConfigCheck {
   const provider = getSetting("ai_provider") || "claude_cli";
   if (provider === "anthropic") return checkAnthropicConfig();
   if (provider === "mistral") return checkMistralConfig();
+  if (provider === "openai") return checkOpenAIConfig();
   if (provider === "gemini") return checkGeminiConfig();
   return { ok: true, missing: [], warnings: [] };
 }

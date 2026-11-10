@@ -288,6 +288,8 @@ export function Chatbot() {
       ? "Gemini"
       : provider === "mistral"
       ? "Mistral"
+      : provider === "openai"
+      ? "OpenAI"
       : "Claude CLI";
 
   // Register the sender for external use (command palette, shortcuts).

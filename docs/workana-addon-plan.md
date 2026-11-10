@@ -17,7 +17,7 @@ sobre una sesión iniciada por el usuario.
 - **Playwright determinista** hace el navegador (login, leer ofertas, postear). No usa IA.
 - **`generateStructured`** hace solo el razonamiento sobre **texto plano** extraído.
   Como el paso IA es "string → JSON", entra directo en el `ai_provider` actual
-  (claude_cli / gemini / anthropic) sin tocar el navegador → no queda atado a un proveedor.
+  (claude_cli / gemini / anthropic / mistral / openai) sin tocar el navegador → no queda atado a un proveedor.
 - Lo único "personal" (no portable) es la sesión logueada + browser local, lo que
   encaja con el modelo self-hosted de un usuario.
 
@@ -111,7 +111,7 @@ Arreglados y verificados:
 ## Fases
 
 - **Fase 0 — Fundaciones (sin navegador)** ✅
-  - `model?` opcional en `generateStructured` (provider.ts + claude-cli/anthropic/gemini).
+  - `model?` opcional en `generateStructured` (provider.ts + claude-cli/anthropic/gemini/mistral/openai).
   - 4 tablas + migraciones (schema.ts + migrations.ts).
   - Settings opt-in: `workana_enabled`, `workana_weekly_connections`,
     `workana_profile_url`, `workana_auth_state`, `workana_last_scan_at`.

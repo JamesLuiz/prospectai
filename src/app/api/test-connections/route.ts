@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Anthropic from "@anthropic-ai/sdk";
 import { createMistral } from "@ai-sdk/mistral";
+import { createOpenAI } from "@ai-sdk/openai";
 import { generateText } from "ai";
 import { testConnection as testResend } from "@/lib/resend-client";
 import { testSmtp } from "@/lib/smtp-client";
@@ -50,6 +51,23 @@ export async function GET() {
       results.mistral = { ok: true };
     } catch (err) {
       results.mistral = { ok: false, error: err instanceof Error ? err.message : "Connection failed" };
+    }
+  }
+
+  // Test OpenAI (only when a key is configured)
+  const openaiKey = getApiKey("openai_api_key", "OPENAI_API_KEY");
+  if (openaiKey) {
+    try {
+      await generateText({
+        model: createOpenAI({ apiKey: openaiKey })(
+          process.env.OPENAI_MODEL || "gpt-4.1-mini"
+        ),
+        prompt: "Reply with OK",
+        maxOutputTokens: 16,
+      });
+      results.openai = { ok: true };
+    } catch (err) {
+      results.openai = { ok: false, error: err instanceof Error ? err.message : "Connection failed" };
     }
   }
 

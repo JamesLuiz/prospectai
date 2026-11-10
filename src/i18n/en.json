@@ -976,6 +976,7 @@
       "gemini": "Gemini API key",
       "anthropic": "Anthropic API key",
       "mistral": "Mistral API key",
+      "openai": "OpenAI API key",
       "resend": "Resend API key",
       "configured": "Configured",
       "notSet": "Not set",
@@ -984,7 +985,8 @@
       "resendHint": "Email delivery",
       "gmapsHint": "Not required for the self-hosted gosom scraper — leave blank.",
       "anthropicHint": "Claude via API (copy & analysis)",
-      "mistralHint": "Mistral via API (copy, analysis & chat)"
+      "mistralHint": "Mistral via API (copy, analysis & chat)",
+      "openaiHint": "OpenAI via API (copy, analysis & chat)"
     },
     "aiEngine": {
       "section": "AI engine",
@@ -994,10 +996,12 @@
       "gemini": "Gemini API",
       "anthropic": "Anthropic API",
       "mistral": "Mistral API",
+      "openai": "OpenAI API",
       "claudeCliHelp": "Uses the logged-in claude CLI (Max plan), no API cost. Requires running \"claude auth login\". The chat agent also runs on your CLI session — no API key needed.",
       "geminiHelp": "Uses the Gemini API key configured below.",
       "anthropicHelp": "Uses the Anthropic API key configured below. Default model: claude-sonnet-4-6.",
-      "mistralHelp": "Uses the Mistral API key configured below. Default model: mistral-large-latest (override with the MISTRAL_MODEL env var)."
+      "mistralHelp": "Uses the Mistral API key configured below. Default model: mistral-large-latest (override with the MISTRAL_MODEL env var).",
+      "openaiHelp": "Uses the OpenAI API key configured below. Default model: gpt-5-mini (override with the OPENAI_MODEL env var)."
     },
     "emailProvider": {
       "section": "Email sending",

@@ -95,6 +95,8 @@ RESEND_API_KEY=your_resend_api_key
 ANTHROPIC_API_KEY=           # ai_provider=anthropic
 MISTRAL_API_KEY=             # ai_provider=mistral
 # MISTRAL_MODEL=mistral-large-latest
+OPENAI_API_KEY=              # ai_provider=openai
+# OPENAI_MODEL=gpt-5-mini
 
 # Authentication — pick a username and password
 AUTH_USERNAME=admin
@@ -194,7 +196,7 @@ scan classifies inbound client messages into an actionable inbox.
 
 - **Off by default.** Enable it at **`/workana`** in the dashboard.
 - **Browser:** requires Chromium for Playwright — run `npx playwright install chromium` once.
-- **AI:** reuses your configured `ai_provider` (Claude CLI / Anthropic / Gemini). Drafting
+- **AI:** reuses your configured `ai_provider` (Claude CLI / Anthropic / Gemini / Mistral / OpenAI). Drafting
   defaults to Opus 4.8 (override with `WORKANA_DRAFT_MODEL`).
 - **One-time login:** click *Connect* on `/workana`; a real browser opens for you to sign in
   to Workana once. The session is stored locally (gitignored).

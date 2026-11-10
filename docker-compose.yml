@@ -13,7 +13,7 @@ services:
       # is the app itself, not the scraper. Override with GMAPS_SCRAPER_URL.
       GMAPS_SCRAPER_URL: ${GMAPS_SCRAPER_URL:-http://gmaps-scraper:8080}
     ports:
-      - "3000:3000"
+      - "3002:3000"
     volumes:
       - prospectai-data:/app/data
     depends_on:

@@ -8,22 +8,18 @@ services:
         required: false
     environment:
       GMAPS_SCRAPER_URL: ${GMAPS_SCRAPER_URL:-http://gmaps-scraper:8080}
-    ports:
-      - "3001:3000"
     volumes:
       - prospectai-data:/app/data
     depends_on:
       - gmaps-scraper
-    command: ["sh", "-c", "mkdir -p /app/data && npm run db:migrate && npm start"]
+    command: ["sh", "-c", "mkdir -p /app/data && npm start"]
     restart: unless-stopped
 
   gmaps-scraper:
     image: gosom/google-maps-scraper
-    ports:
-      - "8081:8080"
     volumes:
       - gmapsdata:/gmapsdata
-    command: ["-data-folder", "/gmapsdata"]
+    command: ["-web", "-data-folder", "/gmapsdata"]
     restart: unless-stopped
 
 volumes:

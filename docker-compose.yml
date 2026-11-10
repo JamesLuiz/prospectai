@@ -4,30 +4,22 @@ services:
       context: .
       dockerfile: Dockerfile
     env_file:
-      # Optional so deployments that inject env vars (Coolify, Docker secrets)
-      # still start when no .env.local was copied from .env.example.
       - path: .env.local
         required: false
     environment:
-      # Correct container-to-container URL; `localhost` inside this container
-      # is the app itself, not the scraper. Override with GMAPS_SCRAPER_URL.
       GMAPS_SCRAPER_URL: ${GMAPS_SCRAPER_URL:-http://gmaps-scraper:8080}
-    ports:
-      - "3002:3000"
     volumes:
       - prospectai-data:/app/data
     depends_on:
       - gmaps-scraper
-    command: ["sh", "-c", "mkdir -p /app/data && npm run db:migrate && npm start"]
+    command: ["sh", "-c", "mkdir -p /app/data && npm start"]
     restart: unless-stopped
 
   gmaps-scraper:
     image: gosom/google-maps-scraper
-    ports:
-      - "8081:8080"
     volumes:
       - gmapsdata:/gmapsdata
-    command: ["-data-folder", "/gmapsdata"]
+    command: ["-web", "-data-folder", "/gmapsdata"]
     restart: unless-stopped
 
 volumes:
